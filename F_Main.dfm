@@ -13597,22 +13597,6 @@ object Frm_Editor: TFrm_Editor
           RadioItem = True
           OnClick = Mnu_ThemeClick
         end
-        object Mnu_Theme7: TMenuItem
-          Tag = 6
-          AutoCheck = True
-          Caption = 'Diamond'
-          GroupIndex = 1
-          RadioItem = True
-          OnClick = Mnu_ThemeClick
-        end
-        object Mnu_Theme8: TMenuItem
-          Tag = 7
-          AutoCheck = True
-          Caption = 'Emerald'
-          GroupIndex = 1
-          RadioItem = True
-          OnClick = Mnu_ThemeClick
-        end
         object Mnu_Theme9: TMenuItem
           Tag = 8
           AutoCheck = True
@@ -13649,14 +13633,6 @@ object Frm_Editor: TFrm_Editor
           Tag = 12
           AutoCheck = True
           Caption = 'Sky'
-          GroupIndex = 1
-          RadioItem = True
-          OnClick = Mnu_ThemeClick
-        end
-        object Mnu_Theme14: TMenuItem
-          Tag = 13
-          AutoCheck = True
-          Caption = 'Vapor'
           GroupIndex = 1
           RadioItem = True
           OnClick = Mnu_ThemeClick
@@ -13745,7 +13721,7 @@ object Frm_Editor: TFrm_Editor
     Left = 184
     Top = 40
     Bitmap = {
-      494C010101000800580110001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010101000800040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000001000000001002000000000000010
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

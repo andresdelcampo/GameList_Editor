@@ -116,14 +116,11 @@ type
       Mnu_Theme4: TMenuItem;
       Mnu_Theme5: TMenuItem;
       Mnu_Theme6: TMenuItem;
-      Mnu_Theme7: TMenuItem;
-      Mnu_Theme8: TMenuItem;
       Mnu_Theme9: TMenuItem;
       Mnu_Theme10: TMenuItem;
       Mnu_Theme11: TMenuItem;
       Mnu_Theme12: TMenuItem;
       Mnu_Theme13: TMenuItem;
-      Mnu_Theme14: TMenuItem;
       Mnu_Theme15: TMenuItem;
       Mnu_Theme16: TMenuItem;
       Mnu_Theme17: TMenuItem;
