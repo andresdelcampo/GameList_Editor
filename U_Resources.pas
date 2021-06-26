@@ -186,6 +186,28 @@ resourcestring
    Rst_SystemKindPSP = 'Playstation Portable';
    Rst_SystemKindWII = 'Wii';
    Rst_SystemKindGenesis = 'Genesis';
+   Rst_SystemKind3DO = '3DO';
+   Rst_SystemKindAM = 'Amiga';
+   Rst_SystemKindAMCD = 'Amiga CD';
+   Rst_SystemKindARC = 'Arcade';
+   Rst_SystemKindAT5200 = 'Atari 5200';
+   Rst_SystemKindATLX = 'Atari Lynx';
+   Rst_SystemKindCDTV = 'CDTV';
+   Rst_SystemKindDaphne = 'Daphne';
+   Rst_SystemKindGX4000 = 'Amstrad GX4000';
+   Rst_SystemKindIV = 'Intellivision';
+   Rst_SystemKindNaomi = 'Naomi';
+   Rst_SystemKindNGCD = 'NeoGeo CD';
+   Rst_SystemKindOB = 'OpenBor';
+   Rst_SystemKindPorts = 'Ports';
+   Rst_SystemKindSS = 'Sega Saturn';
+   Rst_SystemKindSNESCD = 'Super Nintendo CD';
+   Rst_SystemKindX68 = 'Sharp X68000';
+   Rst_SystemKindAW = 'Atomiswave';
+   Rst_SystemKindTI99 = 'TI-99';
+   Rst_SystemKindSNMSU1 = 'Super Nintendo MSU1';
+   Rst_SystemKindNDS = 'Nintendo DS';
+   Rst_SystemKindPSPM = 'PSP Minis';
 
 type
    //enumération pour les différents systèmes
@@ -242,7 +264,35 @@ type
                    skGC,
                    skPSP,
                    skWII,
-                   skGenesis );
+                   skGenesis,
+                   sk3do,
+                   skAM,
+                   skAMCD,
+                   skARC,
+                   skAT5200,
+                   skATLX,
+                   skCDTV,
+                   skCV2,
+                   skDaphne,
+                   skGX4000,
+                   skIV,
+                   skNaomi,
+                   skNGCD,
+                   skOB,
+                   skPorts,
+                   skSS,
+                   skSNESCD,
+                   skX68000,
+                   skAW,
+                   skTI99,
+                   skMSU1,
+                   skGW2,
+                   skNDS,
+                   skODY2,
+                   skTG,
+                   skTGCD,
+                   skPSPM
+                   );
 
    //enum noms des themes
    TThemeName = ( tnAmakrits,
@@ -508,7 +558,35 @@ const
         Rst_SystemKindGC,
         Rst_SystemKindPSP,
         Rst_SystemKindWII,
-        Rst_SystemKindGenesis );
+        Rst_SystemKindGenesis,
+        Rst_SystemKind3DO,
+        Rst_SystemKindAM,
+        Rst_SystemKindAMCD,
+        Rst_SystemKindARC,
+        Rst_SystemKindAT5200,
+        Rst_SystemKindATLX,
+        Rst_SystemKindCDTV,
+        Rst_SystemKindCV,
+        Rst_SystemKindDaphne,
+        Rst_SystemKindGX4000,
+        Rst_SystemKindIV,
+        Rst_SystemKindNaomi,
+        Rst_SystemKindNGCD,
+        Rst_SystemKindOB,
+        Rst_SystemKindPorts,
+        Rst_SystemKindSS,
+        Rst_SystemKindSNESCD,
+        Rst_SystemKindX68,
+        Rst_SystemKindAW,
+        Rst_SystemKindTI99,
+        Rst_SystemKindSNMSU1,
+        Rst_SystemKindGW,
+        Rst_SystemKindNDS,
+        Rst_SystemKindODY,
+        Rst_SystemKindPCE,
+        Rst_SystemKindPCECD,
+        Rst_SystemKindPSPM
+        );
 
    //tableau de liaison enum systemes/nom des dossiers systeme
    Cst_SystemKindFolderNames: array[TSystemKind] of string =
@@ -565,7 +643,35 @@ const
         'gc',
         'psp',
         'wii',
-        'genesis' );
+        'genesis',
+        '3do',
+        'amiga',
+        'amigacd32',
+        'arcade',
+        'atari5200',
+        'atarilynx',
+        'cdtv',
+        'coleco',
+        'daphne',
+        'gx4000',
+        'intellivision',
+        'naomi',
+        'neogeocd',
+        'openbor',
+        'ports',
+        'saturn',
+        'snescd',
+        'x68000',
+        'atomiswave',
+        'ti99',
+        'snesmsu1',
+        'gameandwatch',
+        'nds',
+        'odyssey2',
+        'tg16',
+        'tg16cd',
+        'pspminis'
+         );
 
    //tableau de liaison enum systemes/nom image systeme
    Cst_SystemKindImageNames: array[TSystemKind] of string =
@@ -622,14 +728,45 @@ const
         'gc.png',
         'psp.png',
         'wii.png',
-        'genesis.png' );
+        'genesis.png',
+        '3do.png',
+        'amiga.png',
+        'amigacd32.png',
+        'mame.png',
+        'atari5200.png',
+        'lynx.png',
+        'cdtv.png',
+        'colecovision.png',
+        'daphne.png',
+        'gx4000.png',
+        'intellivision.png',
+        'naomi.png',
+        'neogeocd.png',
+        'openbor.png',
+        'ports.png',
+        'saturn.png',
+        'snescd.png',
+        'x68000.png',
+        'atomiswave.png',
+        'ti99.png',
+        'snesmsu1.png',
+        'gw.png',
+        'nds.png',
+        'o2em.png',
+        'pcengine.png',
+        'pcenginecd.png',
+        'pspminis.png'
+        );
 
    Cst_SystemKindId: array[TSystemKind] of string =
       ( '3', '4', '2', '1', '75', '65', '26', '41', '42', '138', '106', '75',
         '75', '52', '10', '21', '9', '12', '75', '28', '75', '113', '113',
         '113', '25', '82', '14', '104', '31', '114', '57', '135', '123',
         '19', '20', '109', '105', '102', '11', '45', '46', '76', '77', '64',
-        '64', '86', '48', '66', '135', '23', '13', '61', '16', '1' );
+        '64', '86', '48', '66', '135', '23', '13', '61', '16', '1',
+        '0', '0', '0', '75', '0', '28', '0', '0', '0', '0', '0', '0',
+        '0', '0', '0', '0', '0', '0', '0', '0', '0', '52', '0', '104', '31',
+        '114', '0');
 
    Cst_CountryName: array[TCountryName] of string =
       ( '', 'de', 'asi', 'au', 'br', 'bg', 'ca', 'cl', 'cn', 'ame', 'kr', 'cus',
