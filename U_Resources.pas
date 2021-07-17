@@ -732,7 +732,7 @@ const
         '3do.png',
         'amiga.png',
         'amigacd32.png',
-        'mame.png',
+        'arcade.png',
         'atari5200.png',
         'lynx.png',
         'cdtv.png',
@@ -758,15 +758,17 @@ const
         'pspminis.png'
         );
 
+   // Screenscraper.fr system IDs, retrieved with this URL:
+   // https://www.screenscraper.fr/api2/systemesListe.php?devid=xxx&devpassword=yyy&softname=zzz&output=XML&ssid=test&sspassword=test
    Cst_SystemKindId: array[TSystemKind] of string =
       ( '3', '4', '2', '1', '75', '65', '26', '41', '42', '138', '106', '75',
         '75', '52', '10', '21', '9', '12', '75', '28', '75', '113', '113',
         '113', '25', '82', '14', '104', '31', '114', '57', '135', '123',
         '19', '20', '109', '105', '102', '11', '45', '46', '76', '77', '64',
         '64', '86', '48', '66', '135', '23', '13', '61', '16', '1',
-        '0', '0', '0', '75', '0', '28', '0', '0', '0', '0', '0', '0',
-        '0', '0', '0', '0', '0', '0', '0', '0', '0', '52', '0', '104', '31',
-        '114', '0');
+        '29', '64', '130', '75', '40', '28', '129', '48', '49', '87', '115',
+        '56', '70', '214', '135', '22', '210', '79', '53', '205', '210', '52',
+        '15', '104', '31', '114', '172');
 
    Cst_CountryName: array[TCountryName] of string =
       ( '', 'de', 'asi', 'au', 'br', 'bg', 'ca', 'cl', 'cn', 'ame', 'kr', 'cus',
