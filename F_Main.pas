@@ -180,6 +180,7 @@ type
       Chk_ArcadeBox: TCheckBox;
       Chk_Wheel: TCheckBox;
       Mnu_Reload: TMenuItem;
+    Mnu_DeleteGameVideo: TMenuItem;
 
       procedure FormCreate(Sender: TObject);
       procedure FormDestroy(Sender: TObject);
@@ -200,6 +201,7 @@ type
       procedure FormClose(Sender: TObject; var Action: TCloseAction);
       procedure Btn_DeleteClick(Sender: TObject);
       procedure Mnu_DeleteWoPromptClick(Sender: TObject);
+      procedure Mnu_DeleteGameVideoClick(Sender: TObject);
       procedure ChangeCaseClick(Sender: TObject);
       procedure ChangeCaseGameClick(Sender: TObject);
       procedure FormShow(Sender: TObject);
@@ -248,7 +250,7 @@ type
       FImageFolder: string;
       FXmlImageFolderPath: string;
       FIsLoading: Boolean;
-      FGodMode, FAutoHash, FDelWoPrompt, FGenesisLogo,
+      FGodMode, FAutoHash, FDelWoPrompt, FDelGameVideo, FGenesisLogo,
       FShowTips, FFolderIsOnPi, FPiPrompts, FSysIsRecal,
       FPiLoadedOnce: Boolean;
       FRecalLogin, FRecalPwd, FRetroLogin, FRetroPwd: string;
@@ -301,7 +303,7 @@ type
       function GetThemeEnum( aNumber: Integer ): TThemeName;
       function GetLangEnum( aNumber: Integer ): TLangName;
       function GetPhysicalRomPath( const aRomPath: string ): string;
-      function GetPhysicalImagePath( const aImagePath: string ): string;
+      function GetPhysicalMediaPath( const aPath: string ): string;
       function MyMessageDlg( const Msg: string; DlgTypt: TmsgDlgType; button: TMsgDlgButtons;
                             Caption: array of string; dlgcaption: string ): Integer;
 
@@ -354,14 +356,14 @@ begin
    Result:= StringReplace( Result, '/', '\', [rfReplaceAll] );
 end;
 
-function TFrm_Editor.GetPhysicalImagePath( const aImagePath: string ): string;
+function TFrm_Editor.GetPhysicalMediaPath( const aPath: string ): string;
 var
    _Pos: Integer;
 begin
-   if aImagePath.IsEmpty then Result:= ''
+   if aPath.IsEmpty then Result:= ''
    else begin
-      _Pos:= Pos( '/', aImagePath );
-      Result:= FRootPath + FCurrentFolder + Copy( aImagePath, Succ( _Pos ), ( aImagePath.Length - _Pos ) );
+      _Pos:= Pos( '/', aPath );
+      Result:= FRootPath + FCurrentFolder + Copy( aPath, Succ( _Pos ), ( aPath.Length - _Pos ) );
       Result:= StringReplace( Result, '/', '\', [rfReplaceAll] );
    end;
 end;
@@ -450,6 +452,7 @@ begin
       FGodMode:= FileIni.ReadBool( Cst_IniOptions, Cst_IniGodMode, False );
       Mnu_GodMode.Checked:= FGodMode;
       Mnu_DeleteWoPrompt.Enabled:= FGodMode;
+      Mnu_DeleteGameVideo.Enabled:= FGodMode;
       Btn_Delete.Visible:= FGodMode;
 
       FAutoHash:= FileIni.ReadBool( Cst_IniOptions, Cst_IniAutoHash, False );
@@ -457,6 +460,9 @@ begin
 
       FDelWoPrompt:= FileIni.ReadBool( Cst_IniOptions, Cst_IniDelWoPrompt, False );
       Mnu_DeleteWoPrompt.Checked:= FDelWoPrompt;
+
+      FDelGameVideo:= FileIni.ReadBool( Cst_IniOptions, Cst_IniDelGameVideo, False );
+      Mnu_DeleteGameVideo.Checked:= FDelGameVideo;
 
       FPiPrompts:= FileIni.ReadBool( Cst_IniOptions, Cst_IniPiPrompts, False );
       Mnu_PiPrompts.Checked:= FPiPrompts;
@@ -497,6 +503,7 @@ begin
       FileIni.WriteBool( Cst_IniOptions, Cst_IniGodMode, FGodMode );
       FileIni.WriteBool( Cst_IniOptions, Cst_IniAutoHash, FAutoHash );
       FileIni.WriteBool( Cst_IniOptions, Cst_IniDelWoPrompt, ( FGodMode and FDelWoPrompt ) );
+      FileIni.WriteBool( Cst_IniOptions, Cst_IniDelGameVideo, ( FGodMode and FDelGameVideo ) );
       FileIni.WriteBool( Cst_IniOptions, Cst_IniGenesisLogo, FGenesisLogo );
       FileIni.WriteBool( Cst_IniOptions, Cst_ShowTips, FShowTips );
       FileIni.WriteBool( Cst_IniOptions, Cst_IniPiPrompts, FPiPrompts );
@@ -854,6 +861,7 @@ begin
                                GetNodeValue( _Node, Cst_Name ),
                                GetNodeValue( _Node,Cst_Description ),
                                GetNodeValue( _Node, Cst_ImageLink ),
+                               GetNodeValue( _Node, Cst_VideoLink ),
                                GetNodeValue( _Node, Cst_Rating ),
                                GetNodeValue( _Node, Cst_Developer ),
                                GetNodeValue( _Node, Cst_Publisher ),
@@ -867,7 +875,8 @@ begin
                                GetNodeValue( _Node, Cst_Favorite ) );
 
          _Game.PhysicalRomPath:= GetPhysicalRomPath( _Game.RomPath );
-         _Game.PhysicalImagePath:= GetPhysicalImagePath( _Game.ImagePath );
+         _Game.PhysicalImagePath:= GetPhysicalMediaPath( _Game.ImagePath );
+         _Game.PhysicalVideoPath:= GetPhysicalMediaPath( _Game.VideoPath );
          _Game.IsOrphan:= not FileExists( _Game.PhysicalRomPath );
 
          //On ajoute à la _Gamelist
@@ -1917,6 +1926,11 @@ begin
     //On supprime l'image du jeu
     DeleteFile( aGame.PhysicalImagePath );
 
+    // Delete video if requested in the Options
+    if FDelGameVideo then begin
+       DeleteFile( aGame.PhysicalVideoPath );
+    end;
+
     //suppression du jeu physiquement (action spéciale pour PSX)
     if ( getSystemKind = skPS ) then begin
        DeleteFile( StringReplace( aGame.PhysicalRomPath, '.cue', '.bin', [rfReplaceAll] ) );
@@ -2044,9 +2058,12 @@ begin
    Btn_Delete.Visible:= Mnu_GodMode.Checked;
    FGodMode:= Mnu_GodMode.Checked;
    Mnu_DeleteWoPrompt.Enabled:= FGodMode;
+   Mnu_DeleteGameVideo.Enabled:= FGodMode;
    if not FGodMode then begin
       Mnu_DeleteWoPrompt.Checked:= False;
       FDelWoPrompt:= False;
+      Mnu_DeleteGameVideo.Checked:= False;
+      FDelGameVideo:= False;
    end;
 end;
 
@@ -2083,6 +2100,11 @@ end;
 procedure TFrm_Editor.Mnu_DeleteWoPromptClick(Sender: TObject);
 begin
    FDelWoPrompt:= Mnu_DeleteWoPrompt.Checked;
+end;
+
+procedure TFrm_Editor.Mnu_DeleteGameVideoClick(Sender: TObject);
+begin
+   FDelGameVideo:= Mnu_DeleteGameVideo.Checked;
 end;
 
 //Au click sur le menu item export to txt file

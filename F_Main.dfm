@@ -6887,6 +6887,10 @@ object Frm_Editor: TFrm_Editor
         ImageIndex = 1
         OnHide = Tbs_ScrapeHide
         OnShow = Tbs_ScrapeShow
+        ExplicitLeft = 0
+        ExplicitTop = 0
+        ExplicitWidth = 0
+        ExplicitHeight = 0
         object Img_ScreenScraper: TImage
           Left = 995
           Top = 644
@@ -13503,6 +13507,11 @@ object Frm_Editor: TFrm_Editor
           Caption = 'Delete without prompt'
           Enabled = False
           OnClick = Mnu_DeleteWoPromptClick
+        end
+        object Mnu_DeleteGameVideo: TMenuItem
+          AutoCheck = True
+          Caption = 'Delete game video'
+          Enabled = False
         end
         object Mnu_AutoHash: TMenuItem
           AutoCheck = True

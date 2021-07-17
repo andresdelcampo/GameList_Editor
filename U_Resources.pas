@@ -18,7 +18,7 @@ resourcestring
    Rst_Help2 = 'Enabling this option will let you delete games directly from the application.' + sLineBreak +
                'A delete button will be added to the GUI.' + sLineBreak +
                'You will be prompted to confirm when you click on the delete button.' + sLineBreak +
-               'Deleting a game will remove its entry from the gamelist, delete the matching picture,' +
+               'Deleting a game will remove its entry from the gamelist, delete the matching picture and video,' +
                'and delete the file from your folder.';
 
    Rst_Title3 = 'Delete without prompt:';
@@ -87,9 +87,9 @@ resourcestring
               'from a Recalbox or Retropie installation:' + sLineBreak +
               'https://www.recalbox.com/' + sLineBreak +
               'https://retropie.org.uk/' + sLineBreak + sLineBreak +
-              'It is written in Delphi (Tokyo 10.2.1) by NeeeeB' + sLineBreak +
+              'It is written in Delphi 10.3 by NeeeeB and Andrés del Campo' + sLineBreak +
               'Its source code is fully available at:' + sLineBreak +
-              'https://github.com/NeeeeB/GameList_Editor' + sLineBreak + sLineBreak +
+              'https://github.com/andresdelcampo/GameList_Editor' + sLineBreak + sLineBreak +
               'Your Gamelist.xml should have been created' + sLineBreak +
               'with Universal XML Scraper by Screech:' + sLineBreak +
               'https://github.com/Universal-Rom-Tools/Universal-XML-Scraper' + sLineBreak + sLineBreak +
@@ -108,7 +108,7 @@ resourcestring
                      'Do you want to hash anyway ?';
 
    Rst_DeleteWarning = 'This will delete the entry in the gamelist,' + sLinebreak +
-                       'the rom itself and the associated image permanently.' + sLineBreak +
+                       'the rom itself and the associated media permanently.' + sLineBreak +
                        'Proceed anyway ?';
 
    Rst_StopES = 'Your systems folder seems to be located on your Pi.' + sLineBreak +
@@ -367,6 +367,7 @@ const
    Cst_Name = 'name';
    Cst_Description = 'desc';
    Cst_ImageLink = 'image';
+   Cst_VideoLink = 'video';
    Cst_Rating = 'rating';
    Cst_ReleaseDate = 'releasedate';
    Cst_Developer = 'developer';
@@ -397,6 +398,7 @@ const
    Cst_IniGodMode = 'GodMode';
    Cst_IniAutoHash = 'AutoHash';
    Cst_IniDelWoPrompt = 'DelWoPrompt';
+   Cst_IniDelGameVideo = 'DelGameVideo';
    Cst_IniPiPrompts = 'PiPrompts';
    Cst_ShowTips = 'ShowTips';
    Cst_IniGenesisLogo = 'GenesisLogo';
