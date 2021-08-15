@@ -1,3 +1,7 @@
+# New in this fork
+This repository intends to contribute to GameList Editor development and bring it back to life as NeeeeB is not planning to build it anymore. This fork adds 20 systems (with logos) previously not recognized by GameList Editor: '3do', 'amiga' (generic), 'amigacd32', 'arcade', 'atari5200', 'atarilynx', 'cdtv', 'coleco', 'daphne', 'gx4000', 'intellivision', 'naomi', 'neogeocd', 'openbor', 'ports', 'saturn', 'snescd', 'x68000', 'atomiswave', 'ti99', 'snesmsu1', 'gameandwatch', 'nds', 'odyssey2', 'tg16', 'tg16cd', 'pspminis'. It also adds an option to delete game videos while in God Mode.
+
+# Original readme
 ![alt text](https://github.com/NeeeeB/GameList_Editor/blob/master/Images/logo.png)
 
 GameList Editor is a tool written in Delphi(Windows only but Wine compatible) to help the edition of gamelist.xml files generated from UXS for Recalbox or Retropie.
