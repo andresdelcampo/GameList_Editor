@@ -18,7 +18,7 @@ resourcestring
    Rst_Help2 = 'Enabling this option will let you delete games directly from the application.' + sLineBreak +
                'A delete button will be added to the GUI.' + sLineBreak +
                'You will be prompted to confirm when you click on the delete button.' + sLineBreak +
-               'Deleting a game will remove its entry from the gamelist, delete the matching picture,' +
+               'Deleting a game will remove its entry from the gamelist, delete the matching picture and video,' +
                'and delete the file from your folder.';
 
    Rst_Title3 = 'Delete without prompt:';
@@ -87,9 +87,9 @@ resourcestring
               'from a Recalbox or Retropie installation:' + sLineBreak +
               'https://www.recalbox.com/' + sLineBreak +
               'https://retropie.org.uk/' + sLineBreak + sLineBreak +
-              'It is written in Delphi (Tokyo 10.2.1) by NeeeeB' + sLineBreak +
+              'It is written in Delphi 10.3 by NeeeeB and Andr√©s del Campo' + sLineBreak +
               'Its source code is fully available at:' + sLineBreak +
-              'https://github.com/NeeeeB/GameList_Editor' + sLineBreak + sLineBreak +
+              'https://github.com/andresdelcampo/GameList_Editor' + sLineBreak + sLineBreak +
               'Your Gamelist.xml should have been created' + sLineBreak +
               'with Universal XML Scraper by Screech:' + sLineBreak +
               'https://github.com/Universal-Rom-Tools/Universal-XML-Scraper' + sLineBreak + sLineBreak +
@@ -108,7 +108,7 @@ resourcestring
                      'Do you want to hash anyway ?';
 
    Rst_DeleteWarning = 'This will delete the entry in the gamelist,' + sLinebreak +
-                       'the rom itself and the associated image permanently.' + sLineBreak +
+                       'the rom itself and the associated media permanently.' + sLineBreak +
                        'Proceed anyway ?';
 
    Rst_StopES = 'Your systems folder seems to be located on your Pi.' + sLineBreak +
@@ -131,7 +131,7 @@ resourcestring
    Rst_ServerError8 = 'Check your Internet/Proxy parameters';
    Rst_StreamError = 'Oops !! An error has occured while reading the stream !!';
 
-   //noms des systemes tels qu'ils seront affichÈs dans la combobox
+   //noms des systemes tels qu'ils seront affich√©s dans la combobox
    Rst_SystemKindNES = 'Nintendo';
    Rst_SystemKindSNES = 'Super Nintendo';
    Rst_SystemKindMS = 'Master System';
@@ -211,7 +211,7 @@ resourcestring
    Rst_SystemKindOther = 'Other';
 
 type
-   //enumÈration pour les diffÈrents systËmes
+   //enum√©ration pour les diff√©rents syst√®mes
    TSystemKind = ( skNES,
                    skSNES,
                    skMasterSystem,
@@ -303,14 +303,14 @@ type
                   tnAuric,
                   tnCarbon,
                   tnCharcoalDarkSlate,
-                  tnDiamond,
-                  tnEmerald,
+                  //tnDiamond,
+                  //tnEmerald,
                   tnEmeraldLightSlate,
                   tnGlossy,
                   tnLight,
                   tnRubyGraphite,
                   tnSky,
-                  tnVapor,
+                  //tnVapor,
                   tnWindows10,
                   tnWindows10Dark,
                   tnWindowsBasic );
@@ -369,6 +369,7 @@ const
    Cst_Name = 'name';
    Cst_Description = 'desc';
    Cst_ImageLink = 'image';
+   Cst_VideoLink = 'video';
    Cst_Rating = 'rating';
    Cst_ReleaseDate = 'releasedate';
    Cst_Developer = 'developer';
@@ -399,6 +400,7 @@ const
    Cst_IniGodMode = 'GodMode';
    Cst_IniAutoHash = 'AutoHash';
    Cst_IniDelWoPrompt = 'DelWoPrompt';
+   Cst_IniDelGameVideo = 'DelGameVideo';
    Cst_IniPiPrompts = 'PiPrompts';
    Cst_ShowTips = 'ShowTips';
    Cst_IniGenesisLogo = 'GenesisLogo';
@@ -485,14 +487,14 @@ const
         'Auric',
         'Carbon',
         'Charcoal Dark Slate',
-        'Diamond',
-        'Emerald',
+        //'Diamond',
+        //'Emerald',
         'Emerald Light Slate',
         'Glossy',
         'Light',
         'Ruby Graphite',
         'Sky',
-        'Vapor',
+        //'Vapor',
         'Windows10',
         'Windows10 Dark',
         'Windows' );
@@ -505,7 +507,7 @@ const
         'es',
         'pt_BR' );
 
-   //tableau de liaison enum systemes / noms systems affichÈs
+   //tableau de liaison enum systemes / noms systems affich√©s
    Cst_SystemKindStr: array[TSystemKind] of string =
       ( Rst_SystemKindNES,
         Rst_SystemKindSNES,
@@ -736,7 +738,7 @@ const
         '3do.png',
         'amiga.png',
         'amigacd32.png',
-        'mame.png',
+        'arcade.png',
         'atari5200.png',
         'lynx.png',
         'cdtv.png',
@@ -763,15 +765,17 @@ const
         'other.png'
         );
 
+   // Screenscraper.fr system IDs, retrieved with this URL:
+   // https://www.screenscraper.fr/api2/systemesListe.php?devid=xxx&devpassword=yyy&softname=zzz&output=XML&ssid=test&sspassword=test
    Cst_SystemKindId: array[TSystemKind] of string =
       ( '3', '4', '2', '1', '75', '65', '26', '41', '42', '138', '106', '75',
         '75', '52', '10', '21', '9', '12', '75', '28', '75', '113', '113',
         '113', '25', '82', '14', '104', '31', '114', '57', '135', '123',
         '19', '20', '109', '105', '102', '11', '45', '46', '76', '77', '64',
         '64', '86', '48', '66', '135', '23', '13', '61', '16', '1',
-        '0', '0', '0', '75', '0', '28', '0', '0', '0', '0', '0', '0',
-        '0', '0', '0', '0', '0', '0', '0', '0', '0', '52', '0', '104', '31',
-        '114', '0', '0');
+        '29', '64', '130', '75', '40', '28', '129', '48', '49', '87', '115',
+        '56', '70', '214', '135', '22', '210', '79', '53', '205', '210', '52',
+        '15', '104', '31', '114', '172', '0');
 
    Cst_CountryName: array[TCountryName] of string =
       ( '', 'de', 'asi', 'au', 'br', 'bg', 'ca', 'cl', 'cn', 'ame', 'kr', 'cus',
@@ -782,43 +786,43 @@ const
    Cst_CountryNameFull: array[TCountryName] of array[1..5] of string =
       ( ( '', '', '', '', '' ),
         ( 'Allemagne', 'Deutschland', 'Germany', 'Alemania', 'Alemanha' ),
-        ( 'Asie', 'Asien', 'Asia', 'Asia', '¡sia' ),
-        ( 'Australie', 'Australien', 'Australia', 'Australia', 'Austr·lia' ),
-        ( 'BrÈsil', 'Brasilien', 'Brazil', 'Brasil', 'Brasil' ),
-        ( 'Bulgarie', 'Bulgarien', 'Bulgaria', 'Bulgaria', 'Bulg·ria' ),
-        ( 'Canada', 'Kanada', 'Canada', 'Canad·', 'Canad·' ),
+        ( 'Asie', 'Asien', 'Asia', 'Asia', '√Åsia' ),
+        ( 'Australie', 'Australien', 'Australia', 'Australia', 'Austr√°lia' ),
+        ( 'Br√©sil', 'Brasilien', 'Brazil', 'Brasil', 'Brasil' ),
+        ( 'Bulgarie', 'Bulgarien', 'Bulgaria', 'Bulgaria', 'Bulg√°ria' ),
+        ( 'Canada', 'Kanada', 'Canada', 'Canad√°', 'Canad√°' ),
         ( 'Chili', 'Chile', 'Chile', 'Chile', 'Chile' ),
         ( 'Chine', 'China', 'China', 'China', 'China' ),
-        ( 'Continent AmÈricain', 'Amerikanischen Kontinent', 'American continent', 'Continente americano', 'Continente americano' ),
-        ( 'CorÈe', 'Korea', 'Korea', 'Corea', 'Coreia' ),
-        ( 'Custom', 'Maﬂgeschneidert', 'Custom', 'Personalizado', 'Personalizadas' ),
-        ( 'Danemark', 'D‰nemark', 'Denmark', 'Dinamarca', 'Dinamarca' ),
-        ( 'Espagne', 'Spanien', 'Spain', 'EspaÒa', 'Espanha' ),
+        ( 'Continent Am√©ricain', 'Amerikanischen Kontinent', 'American continent', 'Continente americano', 'Continente americano' ),
+        ( 'Cor√©e', 'Korea', 'Korea', 'Corea', 'Coreia' ),
+        ( 'Custom', 'Ma√ügeschneidert', 'Custom', 'Personalizado', 'Personalizadas' ),
+        ( 'Danemark', 'D√§nemark', 'Denmark', 'Dinamarca', 'Dinamarca' ),
+        ( 'Espagne', 'Spanien', 'Spain', 'Espa√±a', 'Espanha' ),
         ( 'Europe', 'Europa', 'Europe', 'Europa', 'Europa' ),
-        ( 'Finlande', 'Finnland', 'Finland', 'Finlandia', 'Finl‚ndia' ),
-        ( 'France', 'Frankreich', 'France', 'Francia', 'FranÁa' ),
-        ( 'GrËce', 'Griechenland', 'Greece', 'Grecia', 'GrÈcia' ),
-        ( 'Hongrie', 'Ungarn', 'Hungary', 'HungrÌa', 'Hungria' ),
+        ( 'Finlande', 'Finnland', 'Finland', 'Finlandia', 'Finl√¢ndia' ),
+        ( 'France', 'Frankreich', 'France', 'Francia', 'Fran√ßa' ),
+        ( 'Gr√®ce', 'Griechenland', 'Greece', 'Grecia', 'Gr√©cia' ),
+        ( 'Hongrie', 'Ungarn', 'Hungary', 'Hungr√≠a', 'Hungria' ),
         ( 'Israel', 'Israel', 'Israel', 'Israel', 'Israel' ),
-        ( 'Italie', 'Italien', 'Italy', 'Italia', 'It·lia' ),
-        ( 'Japon', 'Japan', 'Japan', 'JapÛn', 'Jap„o' ),
-        ( 'KoweÔt', 'Kuwait', 'Kuwait', 'Kuwait', 'Kuweit' ),
+        ( 'Italie', 'Italien', 'Italy', 'Italia', 'It√°lia' ),
+        ( 'Japon', 'Japan', 'Japan', 'Jap√≥n', 'Jap√£o' ),
+        ( 'Kowe√Øt', 'Kuwait', 'Kuwait', 'Kuwait', 'Kuweit' ),
         ( 'Monde', 'World', 'World', 'Mundo', 'Mundo' ),
-        ( 'Moyen-Orient', 'Naher Osten', 'Middle East', 'Medio Oriente', 'MÈdio Oriente' ),
-        ( 'NorvËge', 'Norwegen', 'Norway', 'Noruega', 'Noruega' ),
-        ( 'Nouvelle-ZÈlande', 'Neuseeland', 'New Zealand', 'Nueva Zelanda', 'Nova Zel‚ndia' ),
-        ( 'OcÈanie', 'Ozeanien', 'Oceania', 'OceanÌa', 'Oce‚nia' ),
+        ( 'Moyen-Orient', 'Naher Osten', 'Middle East', 'Medio Oriente', 'M√©dio Oriente' ),
+        ( 'Norv√®ge', 'Norwegen', 'Norway', 'Noruega', 'Noruega' ),
+        ( 'Nouvelle-Z√©lande', 'Neuseeland', 'New Zealand', 'Nueva Zelanda', 'Nova Zel√¢ndia' ),
+        ( 'Oc√©anie', 'Ozeanien', 'Oceania', 'Ocean√≠a', 'Oce√¢nia' ),
         ( 'Pays-Bas', 'Niederlande', 'Netherlands', 'Holanda', 'Holanda' ),
-        ( 'PÈrou', 'Peru', 'Peru', 'Per˙', 'Peru' ),
-        ( 'Pologne', 'Polen', 'Poland', 'Polonia', 'PolÙnia' ),
+        ( 'P√©rou', 'Peru', 'Peru', 'Per√∫', 'Peru' ),
+        ( 'Pologne', 'Polen', 'Poland', 'Polonia', 'Pol√¥nia' ),
         ( 'Portugal', 'Portugal', 'Portugal', 'Portugal', 'Portugal' ),
-        ( 'RÈpublique TchËque', 'Tschechien', 'Czech republic', 'Rep˙blica Checa', 'Rep˙blica Checa' ),
-        ( 'Royaume-Uni', 'Groﬂbritannien', 'United Kingdom', 'Reino Unido', 'Reino Unido' ),
-        ( 'Russie', 'Russland', 'Russia', 'Rusia', 'R˙ssia' ),
-        ( 'Slovaquie', 'Slowakei', 'Slovakia', 'Eslovaquia', 'Eslov·quia' ),
-        ( 'Suede', 'Schweden', 'Sweden', 'Suecia', 'SuÈcia' ),
+        ( 'R√©publique Tch√®que', 'Tschechien', 'Czech republic', 'Rep√∫blica Checa', 'Rep√∫blica Checa' ),
+        ( 'Royaume-Uni', 'Gro√übritannien', 'United Kingdom', 'Reino Unido', 'Reino Unido' ),
+        ( 'Russie', 'Russland', 'Russia', 'Rusia', 'R√∫ssia' ),
+        ( 'Slovaquie', 'Slowakei', 'Slovakia', 'Eslovaquia', 'Eslov√°quia' ),
+        ( 'Suede', 'Schweden', 'Sweden', 'Suecia', 'Su√©cia' ),
         ( 'Taiwan', 'Taiwan', 'Taiwan', 'Taiwan', 'Taiwan' ),
-        ( 'Turquie', 'T¸rkei', 'Turkey', 'TurquÌa', 'Turquia' ),
+        ( 'Turquie', 'T√ºrkei', 'Turkey', 'Turqu√≠a', 'Turquia' ),
         ( 'USA', 'USA', 'USA', 'EUA', 'EUA' ) );
 
 implementation

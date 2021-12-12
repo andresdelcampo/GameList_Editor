@@ -13508,6 +13508,11 @@ object Frm_Editor: TFrm_Editor
           Enabled = False
           OnClick = Mnu_DeleteWoPromptClick
         end
+        object Mnu_DeleteGameVideo: TMenuItem
+          AutoCheck = True
+          Caption = 'Delete game video'
+          Enabled = False
+        end
         object Mnu_AutoHash: TMenuItem
           AutoCheck = True
           Caption = 'Auto Hash'
@@ -13601,22 +13606,6 @@ object Frm_Editor: TFrm_Editor
           RadioItem = True
           OnClick = Mnu_ThemeClick
         end
-        object Mnu_Theme7: TMenuItem
-          Tag = 6
-          AutoCheck = True
-          Caption = 'Diamond'
-          GroupIndex = 1
-          RadioItem = True
-          OnClick = Mnu_ThemeClick
-        end
-        object Mnu_Theme8: TMenuItem
-          Tag = 7
-          AutoCheck = True
-          Caption = 'Emerald'
-          GroupIndex = 1
-          RadioItem = True
-          OnClick = Mnu_ThemeClick
-        end
         object Mnu_Theme9: TMenuItem
           Tag = 8
           AutoCheck = True
@@ -13653,14 +13642,6 @@ object Frm_Editor: TFrm_Editor
           Tag = 12
           AutoCheck = True
           Caption = 'Sky'
-          GroupIndex = 1
-          RadioItem = True
-          OnClick = Mnu_ThemeClick
-        end
-        object Mnu_Theme14: TMenuItem
-          Tag = 13
-          AutoCheck = True
-          Caption = 'Vapor'
           GroupIndex = 1
           RadioItem = True
           OnClick = Mnu_ThemeClick

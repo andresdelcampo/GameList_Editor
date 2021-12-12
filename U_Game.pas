@@ -23,6 +23,7 @@ type
       FRomName: string;
       FRomNameWoExt: string;
       FImagePath: string;
+      FVideoPath: string;
       FName: string;
       FDescription: string;
       FRating: string;
@@ -42,22 +43,24 @@ type
       FIsOrphan: Boolean;
       FPhysicalRomPath: string;
       FPhysicalImagePath: string;
+      FPhysicalVideoPath: string;
 
-      procedure Load( aPath, aName, aDescription, aImagePath, aRating,
-                      aDeveloper, aPublisher, aGenre, aPlayers, aDate,
+      procedure Load( aPath, aName, aDescription, aImagePath, aVideoPath,
+                      aRating, aDeveloper, aPublisher, aGenre, aPlayers, aDate,
                       aRegion, aPlaycount, aLastplayed, aHidden, aFavorite: string );
 
       function GetRomName( const aRomPath: string ): string;
 
    public
-      constructor Create( aPath, aName, aDescription, aImagePath, aRating,
-                          aDeveloper, aPublisher, aGenre, aPlayers, aDate,
+      constructor Create( aPath, aName, aDescription, aImagePath, aVideoPath,
+                          aRating, aDeveloper, aPublisher, aGenre, aPlayers, aDate,
                           aRegion, aPlaycount, aLastplayed, aHidden, aFavorite: string ); reintroduce;
 
       property RomPath: string read FRomPath write FRomPath;
       property RomName: string read FRomName write FRomName;
       property RomNameWoExt: string read FRomNameWoExt write FRomNameWoExt;
       property ImagePath: string read FImagePath write FImagePath;
+      property VideoPath: string read FVideoPath write FVideoPath;
       property Name: string read FName write FName;
       property Description: string read FDescription write FDescription;
       property Rating: string read FRating write FRating;
@@ -77,6 +80,7 @@ type
       property IsOrphan: Boolean read FIsOrphan write FIsOrphan;
       property PhysicalRomPath: string read FPhysicalRomPath write FPhysicalRomPath;
       property PhysicalImagePath: string read FPhysicalImagePath write FPhysicalImagePath;
+      property PhysicalVideoPath: string read FPhysicalVideoPath write FPhysicalVideoPath;
 
       function CalculateMd5( const aFileName: string ): string;
       function CalculateSha1( const aFileName: string ): string;
@@ -101,17 +105,17 @@ begin
 end;
 
 //Constructeur de l'objet TGame
-constructor TGame.Create( aPath, aName, aDescription, aImagePath, aRating,
-                          aDeveloper, aPublisher, aGenre, aPlayers, aDate,
+constructor TGame.Create( aPath, aName, aDescription, aImagePath, aVideoPath,
+                          aRating, aDeveloper, aPublisher, aGenre, aPlayers, aDate,
                           aRegion, aPlaycount, aLastplayed, aHidden, aFavorite: string );
 begin
-   Load( aPath, aName, aDescription, aImagePath, aRating,
+   Load( aPath, aName, aDescription, aImagePath, aVideoPath, aRating,
          aDeveloper, aPublisher, aGenre, aPlayers, aDate, aRegion, aPlaycount,
          aLastplayed, aHidden, aFavorite );
 end;
 
 //Chargement des attributs dans l'objet TGame
-procedure TGame.Load( aPath, aName, aDescription, aImagePath, aRating,
+procedure TGame.Load( aPath, aName, aDescription, aImagePath, aVideoPath, aRating,
                       aDeveloper, aPublisher, aGenre, aPlayers, aDate,
                       aRegion, aPlaycount, aLastplayed, aHidden, aFavorite: string );
 begin
@@ -119,6 +123,7 @@ begin
    FRomName:= GetRomName( aPath );
    FRomNameWoExt:= ChangeFileExt( FRomName, '' );
    FImagePath:= aImagePath;
+   FVideoPath:= aVideoPath;
    FName:= aName;
    FDescription:= aDescription;
    FRating:= aRating;
