@@ -13,7 +13,8 @@ uses
    F_MoreInfos, F_About, F_Help, F_ConfigureSSH, U_gnugettext, U_Resources, U_Game,
    F_ConfigureNetwork, F_AdvNameEditor, U_DownloadThread,
    IdIOHandler, IdIOHandlerSocket, IdURI, IdIOHandlerStack, IdSSL, IdSSLOpenSSL,
-   IdBaseComponent, IdComponent, IdException, IdTCPConnection, IdTCPClient, IdHTTP;
+   IdBaseComponent, IdComponent, IdException, IdTCPConnection, IdTCPClient, IdHTTP,
+  Vcl.OleCtrls, WMPLib_TLB;
 
 type
    TMediaInfo = class
@@ -180,7 +181,8 @@ type
       Chk_ArcadeBox: TCheckBox;
       Chk_Wheel: TCheckBox;
       Mnu_Reload: TMenuItem;
-    Mnu_DeleteGameVideo: TMenuItem;
+      Mnu_DeleteGameVideo: TMenuItem;
+      Wmp_Video: TWindowsMediaPlayer;
 
       procedure FormCreate(Sender: TObject);
       procedure FormDestroy(Sender: TObject);
@@ -241,6 +243,7 @@ type
       procedure Chk_ScrapeClick(Sender: TObject);
       procedure Chk_ManualCRCClick(Sender: TObject);
       procedure Mnu_ReloadClick(Sender: TObject);
+    procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
 
    private
 
@@ -1211,6 +1214,12 @@ begin
 
    //on remet les évènements sur les champs
    FIsLoading:= False;
+
+   if not ( aGame.VideoPath.IsEmpty ) and
+         FileExists( aGame.PhysicalVideoPath ) then begin
+      Wmp_Video.URL:= 'file://' + aGame.PhysicalVideoPath;
+      Wmp_Video.controls.play;
+   end;
 
    if not ( aGame.ImagePath.IsEmpty ) and
           FileExists( aGame.PhysicalImagePath ) then begin
@@ -3260,6 +3269,12 @@ begin
       if FSysIsRecal then StopOrStartES( False, True )
       else StopOrStartES( False, False );
    end;
+end;
+
+// Stop video to prevent crashing the app on closing
+procedure TFrm_Editor.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+begin
+   Wmp_Video.controls.stop;
 end;
 
 //Nettoyage mémoire à la fermeture du programme
