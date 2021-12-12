@@ -87,7 +87,7 @@ resourcestring
               'from a Recalbox or Retropie installation:' + sLineBreak +
               'https://www.recalbox.com/' + sLineBreak +
               'https://retropie.org.uk/' + sLineBreak + sLineBreak +
-              'It is written in Delphi 10.3 by NeeeeB and AndrÈs del Campo' + sLineBreak +
+              'It is written in Delphi 10.3 by NeeeeB and Andr√©s del Campo' + sLineBreak +
               'Its source code is fully available at:' + sLineBreak +
               'https://github.com/andresdelcampo/GameList_Editor' + sLineBreak + sLineBreak +
               'Your Gamelist.xml should have been created' + sLineBreak +
@@ -131,7 +131,7 @@ resourcestring
    Rst_ServerError8 = 'Check your Internet/Proxy parameters';
    Rst_StreamError = 'Oops !! An error has occured while reading the stream !!';
 
-   //noms des systemes tels qu'ils seront affichÈs dans la combobox
+   //noms des systemes tels qu'ils seront affich√©s dans la combobox
    Rst_SystemKindNES = 'Nintendo';
    Rst_SystemKindSNES = 'Super Nintendo';
    Rst_SystemKindMS = 'Master System';
@@ -211,7 +211,7 @@ resourcestring
    Rst_SystemKindOther = 'Other';
 
 type
-   //enumÈration pour les diffÈrents systËmes
+   //enum√©ration pour les diff√©rents syst√®mes
    TSystemKind = ( skNES,
                    skSNES,
                    skMasterSystem,
@@ -507,7 +507,7 @@ const
         'es',
         'pt_BR' );
 
-   //tableau de liaison enum systemes / noms systems affichÈs
+   //tableau de liaison enum systemes / noms systems affich√©s
    Cst_SystemKindStr: array[TSystemKind] of string =
       ( Rst_SystemKindNES,
         Rst_SystemKindSNES,
@@ -786,43 +786,43 @@ const
    Cst_CountryNameFull: array[TCountryName] of array[1..5] of string =
       ( ( '', '', '', '', '' ),
         ( 'Allemagne', 'Deutschland', 'Germany', 'Alemania', 'Alemanha' ),
-        ( 'Asie', 'Asien', 'Asia', 'Asia', '¡sia' ),
-        ( 'Australie', 'Australien', 'Australia', 'Australia', 'Austr·lia' ),
-        ( 'BrÈsil', 'Brasilien', 'Brazil', 'Brasil', 'Brasil' ),
-        ( 'Bulgarie', 'Bulgarien', 'Bulgaria', 'Bulgaria', 'Bulg·ria' ),
-        ( 'Canada', 'Kanada', 'Canada', 'Canad·', 'Canad·' ),
+        ( 'Asie', 'Asien', 'Asia', 'Asia', '√Åsia' ),
+        ( 'Australie', 'Australien', 'Australia', 'Australia', 'Austr√°lia' ),
+        ( 'Br√©sil', 'Brasilien', 'Brazil', 'Brasil', 'Brasil' ),
+        ( 'Bulgarie', 'Bulgarien', 'Bulgaria', 'Bulgaria', 'Bulg√°ria' ),
+        ( 'Canada', 'Kanada', 'Canada', 'Canad√°', 'Canad√°' ),
         ( 'Chili', 'Chile', 'Chile', 'Chile', 'Chile' ),
         ( 'Chine', 'China', 'China', 'China', 'China' ),
-        ( 'Continent AmÈricain', 'Amerikanischen Kontinent', 'American continent', 'Continente americano', 'Continente americano' ),
-        ( 'CorÈe', 'Korea', 'Korea', 'Corea', 'Coreia' ),
-        ( 'Custom', 'Maﬂgeschneidert', 'Custom', 'Personalizado', 'Personalizadas' ),
-        ( 'Danemark', 'D‰nemark', 'Denmark', 'Dinamarca', 'Dinamarca' ),
-        ( 'Espagne', 'Spanien', 'Spain', 'EspaÒa', 'Espanha' ),
+        ( 'Continent Am√©ricain', 'Amerikanischen Kontinent', 'American continent', 'Continente americano', 'Continente americano' ),
+        ( 'Cor√©e', 'Korea', 'Korea', 'Corea', 'Coreia' ),
+        ( 'Custom', 'Ma√ügeschneidert', 'Custom', 'Personalizado', 'Personalizadas' ),
+        ( 'Danemark', 'D√§nemark', 'Denmark', 'Dinamarca', 'Dinamarca' ),
+        ( 'Espagne', 'Spanien', 'Spain', 'Espa√±a', 'Espanha' ),
         ( 'Europe', 'Europa', 'Europe', 'Europa', 'Europa' ),
-        ( 'Finlande', 'Finnland', 'Finland', 'Finlandia', 'Finl‚ndia' ),
-        ( 'France', 'Frankreich', 'France', 'Francia', 'FranÁa' ),
-        ( 'GrËce', 'Griechenland', 'Greece', 'Grecia', 'GrÈcia' ),
-        ( 'Hongrie', 'Ungarn', 'Hungary', 'HungrÌa', 'Hungria' ),
+        ( 'Finlande', 'Finnland', 'Finland', 'Finlandia', 'Finl√¢ndia' ),
+        ( 'France', 'Frankreich', 'France', 'Francia', 'Fran√ßa' ),
+        ( 'Gr√®ce', 'Griechenland', 'Greece', 'Grecia', 'Gr√©cia' ),
+        ( 'Hongrie', 'Ungarn', 'Hungary', 'Hungr√≠a', 'Hungria' ),
         ( 'Israel', 'Israel', 'Israel', 'Israel', 'Israel' ),
-        ( 'Italie', 'Italien', 'Italy', 'Italia', 'It·lia' ),
-        ( 'Japon', 'Japan', 'Japan', 'JapÛn', 'Jap„o' ),
-        ( 'KoweÔt', 'Kuwait', 'Kuwait', 'Kuwait', 'Kuweit' ),
+        ( 'Italie', 'Italien', 'Italy', 'Italia', 'It√°lia' ),
+        ( 'Japon', 'Japan', 'Japan', 'Jap√≥n', 'Jap√£o' ),
+        ( 'Kowe√Øt', 'Kuwait', 'Kuwait', 'Kuwait', 'Kuweit' ),
         ( 'Monde', 'World', 'World', 'Mundo', 'Mundo' ),
-        ( 'Moyen-Orient', 'Naher Osten', 'Middle East', 'Medio Oriente', 'MÈdio Oriente' ),
-        ( 'NorvËge', 'Norwegen', 'Norway', 'Noruega', 'Noruega' ),
-        ( 'Nouvelle-ZÈlande', 'Neuseeland', 'New Zealand', 'Nueva Zelanda', 'Nova Zel‚ndia' ),
-        ( 'OcÈanie', 'Ozeanien', 'Oceania', 'OceanÌa', 'Oce‚nia' ),
+        ( 'Moyen-Orient', 'Naher Osten', 'Middle East', 'Medio Oriente', 'M√©dio Oriente' ),
+        ( 'Norv√®ge', 'Norwegen', 'Norway', 'Noruega', 'Noruega' ),
+        ( 'Nouvelle-Z√©lande', 'Neuseeland', 'New Zealand', 'Nueva Zelanda', 'Nova Zel√¢ndia' ),
+        ( 'Oc√©anie', 'Ozeanien', 'Oceania', 'Ocean√≠a', 'Oce√¢nia' ),
         ( 'Pays-Bas', 'Niederlande', 'Netherlands', 'Holanda', 'Holanda' ),
-        ( 'PÈrou', 'Peru', 'Peru', 'Per˙', 'Peru' ),
-        ( 'Pologne', 'Polen', 'Poland', 'Polonia', 'PolÙnia' ),
+        ( 'P√©rou', 'Peru', 'Peru', 'Per√∫', 'Peru' ),
+        ( 'Pologne', 'Polen', 'Poland', 'Polonia', 'Pol√¥nia' ),
         ( 'Portugal', 'Portugal', 'Portugal', 'Portugal', 'Portugal' ),
-        ( 'RÈpublique TchËque', 'Tschechien', 'Czech republic', 'Rep˙blica Checa', 'Rep˙blica Checa' ),
-        ( 'Royaume-Uni', 'Groﬂbritannien', 'United Kingdom', 'Reino Unido', 'Reino Unido' ),
-        ( 'Russie', 'Russland', 'Russia', 'Rusia', 'R˙ssia' ),
-        ( 'Slovaquie', 'Slowakei', 'Slovakia', 'Eslovaquia', 'Eslov·quia' ),
-        ( 'Suede', 'Schweden', 'Sweden', 'Suecia', 'SuÈcia' ),
+        ( 'R√©publique Tch√®que', 'Tschechien', 'Czech republic', 'Rep√∫blica Checa', 'Rep√∫blica Checa' ),
+        ( 'Royaume-Uni', 'Gro√übritannien', 'United Kingdom', 'Reino Unido', 'Reino Unido' ),
+        ( 'Russie', 'Russland', 'Russia', 'Rusia', 'R√∫ssia' ),
+        ( 'Slovaquie', 'Slowakei', 'Slovakia', 'Eslovaquia', 'Eslov√°quia' ),
+        ( 'Suede', 'Schweden', 'Sweden', 'Suecia', 'Su√©cia' ),
         ( 'Taiwan', 'Taiwan', 'Taiwan', 'Taiwan', 'Taiwan' ),
-        ( 'Turquie', 'T¸rkei', 'Turkey', 'TurquÌa', 'Turquia' ),
+        ( 'Turquie', 'T√ºrkei', 'Turkey', 'Turqu√≠a', 'Turquia' ),
         ( 'USA', 'USA', 'USA', 'EUA', 'EUA' ) );
 
 implementation
