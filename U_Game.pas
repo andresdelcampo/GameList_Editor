@@ -95,6 +95,7 @@ constructor TSystemKindObject.Create( const aName: string );
 var
    _systemKind: TSystemKind;
 begin
+   FSystemKind:= skOther;
    for _systemKind:= Low( TSystemKind )to High( _systemKind ) do begin
       if ( Cst_SystemKindFolderNames[_systemKind] = aName ) then begin
          FSystemKind:= _systemKind;

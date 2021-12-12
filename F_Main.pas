@@ -701,8 +701,8 @@ begin
    Cbx_Favorite.ItemIndex:= -1;
    Edt_Search.Text:= '';
 
-    //On vide la liste globale des systèmes (cas 2eme ouverture)
-    GSystemList.Clear;
+   //On vide la liste globale des systèmes (cas 2eme ouverture)
+   GSystemList.Clear;
 
    //On met le compteur de dossiers valides à 0
    ValidFolderCount:= 0;
@@ -754,10 +754,12 @@ begin
 
             //On ajoute ensuite le nom du systeme au combobox des systemes trouvés
             _system:= TSystemKindObject.Create( Info.Name );
-            if ( _system.FSystemKind = skMegaDrive ) and FGenesisLogo then
+            if ( _system.FSystemKind = skOther ) then
+               Cbx_Systems.Items.AddObject( Info.Name, _system )
+            else if ( _system.FSystemKind = skMegaDrive ) and FGenesisLogo then
                Cbx_Systems.Items.AddObject( Cst_SystemKindStr[skGenesis], _system )
             else
-            Cbx_Systems.Items.AddObject( Cst_SystemKindStr[_system.FSystemKind], _system );
+               Cbx_Systems.Items.AddObject( Cst_SystemKindStr[_system.FSystemKind], _system );
 
             //On incrémente le compteur de dossier système valides
             Inc( ValidFolderCount );
@@ -1458,7 +1460,10 @@ end;
 //Récupère le nom du dossier du systeme selectionné dans le combobox
 function TFrm_Editor.getCurrentFolderName: string;
 begin
-   Result:= Cst_SystemKindFolderNames[getSystemKind];
+   if getSystemKind = skOther then
+      Result:= Cbx_Systems.Text
+   else
+      Result:= Cst_SystemKindFolderNames[getSystemKind];
 end;
 
 //Récupère le nom du logo du système sélectionné dans le combobox

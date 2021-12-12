@@ -208,6 +208,7 @@ resourcestring
    Rst_SystemKindSNMSU1 = 'Super Nintendo MSU1';
    Rst_SystemKindNDS = 'Nintendo DS';
    Rst_SystemKindPSPM = 'PSP Minis';
+   Rst_SystemKindOther = 'Other';
 
 type
    //enumération pour les différents systèmes
@@ -291,7 +292,8 @@ type
                    skODY2,
                    skTG,
                    skTGCD,
-                   skPSPM
+                   skPSPM,
+                   skOther
                    );
 
    //enum noms des themes
@@ -587,7 +589,8 @@ const
         Rst_SystemKindODY,
         Rst_SystemKindPCE,
         Rst_SystemKindPCECD,
-        Rst_SystemKindPSPM
+        Rst_SystemKindPSPM,
+        Rst_SystemKindOther
         );
 
    //tableau de liaison enum systemes/nom des dossiers systeme
@@ -672,7 +675,8 @@ const
         'odyssey2',
         'tg16',
         'tg16cd',
-        'pspminis'
+        'pspminis',
+        ''
          );
 
    //tableau de liaison enum systemes/nom image systeme
@@ -757,7 +761,8 @@ const
         'o2em.png',
         'pcengine.png',
         'pcenginecd.png',
-        'pspminis.png'
+        'pspminis.png',
+        'other.png'
         );
 
    // Screenscraper.fr system IDs, retrieved with this URL:
@@ -770,7 +775,7 @@ const
         '64', '86', '48', '66', '135', '23', '13', '61', '16', '1',
         '29', '64', '130', '75', '40', '28', '129', '48', '49', '87', '115',
         '56', '70', '214', '135', '22', '210', '79', '53', '205', '210', '52',
-        '15', '104', '31', '114', '172');
+        '15', '104', '31', '114', '172', '0');
 
    Cst_CountryName: array[TCountryName] of string =
       ( '', 'de', 'asi', 'au', 'br', 'bg', 'ca', 'cl', 'cn', 'ame', 'kr', 'cus',
