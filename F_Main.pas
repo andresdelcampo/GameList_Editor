@@ -27,10 +27,8 @@ type
       Pgc_Editor: TPageControl;
       Tbs_Main: TTabSheet;
       Tbs_Scrape: TTabSheet;
-      Img_BackGround: TImage;
       Lbl_NbGamesFound: TLabel;
       Lbl_SelectSystem: TLabel;
-      Img_Game: TImage;
       Lbl_Filter: TLabel;
       Img_Logo: TImage;
       Img_System: TImage;
@@ -182,7 +180,14 @@ type
       Chk_Wheel: TCheckBox;
       Mnu_Reload: TMenuItem;
       Mnu_DeleteGameVideo: TMenuItem;
+      Pgc_Media: TPageControl;
+      Tbs_Picture: TTabSheet;
+      Tbs_Video: TTabSheet;
       Wmp_Video: TWindowsMediaPlayer;
+      Img_Game: TImage;
+      Img_BackGround: TImage;
+    Btn_ChangeVideo: TButton;
+    Btn_RemoveVideo: TButton;
 
       procedure FormCreate(Sender: TObject);
       procedure FormDestroy(Sender: TObject);
@@ -244,6 +249,9 @@ type
       procedure Chk_ManualCRCClick(Sender: TObject);
       procedure Mnu_ReloadClick(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+    procedure Pgc_MediaChange(Sender: TObject);
+    procedure Btn_ChangeVideoClick(Sender: TObject);
+    procedure Btn_RemoveVideoClick(Sender: TObject);
 
    private
 
@@ -280,9 +288,11 @@ type
       procedure EnableComponents( aValue: Boolean );
       procedure CheckIfChangesToSave;
       procedure ChangeImage( const aPath: string; aGame: TGame );
+      procedure ChangeVideo( const aPath: string; aGame: TGame );
       procedure LoadSystemLogo( const aPictureName: string );
       procedure DeleteGame( aGame: TGame );
       procedure DeleteGamePicture;
+      procedure DeleteGameVideo;
       procedure CheckMenuItem( aNumber: Integer; aLang: Boolean = False );
       procedure RemoveRegionFromGameName( aGame: TGame; aStartPos: Integer );
       procedure ConvertFieldsCase( aGame: TGame; aUnique: Boolean = False;
@@ -320,6 +330,7 @@ type
       procedure ThreadTerminated( Sender: TObject );
       procedure EmptyScrapeFields;
       procedure ConvertScrapeToUpOrLow( aUp: Boolean = False );
+      procedure UpdateVideo(aGame: TGame);
 
       function GetGameXml( const aSysId: string; aGame: TGame ): Boolean;
       function GetFileSize( const aPath: string ): string;
@@ -934,8 +945,10 @@ begin
    Lbl_Favorite.Enabled:= aValue;
 
    Btn_ChangeImage.Enabled:= aValue;
+   Btn_ChangeVideo.Enabled:= aValue;
    Btn_Scrape.Enabled:= aValue;
    Btn_RemovePicture.Enabled:= aValue;
+   Btn_RemoveVideo.Enabled:= aValue;
    Btn_SetDefaultPicture.Enabled:= aValue;
    Btn_MoreInfos.Enabled:= aValue;
    Btn_Delete.Enabled:= aValue;
@@ -1175,7 +1188,9 @@ begin
    Btn_Delete.Enabled:= aValue;
    Btn_Scrape.Enabled:= aValue;
    Btn_ChangeImage.Enabled:= aValue;
+   Btn_ChangeVideo.Enabled:= aValue;
    Btn_RemovePicture.Enabled:= aValue;
+   Btn_RemoveVideo.Enabled:= aValue;
    Btn_SetDefaultPicture.Enabled:= aValue;
    Btn_ChangeAll.Enabled:= aValue and ( Cbx_Filter.ItemIndex = 1) and ( Lbx_Games.Items.Count > 0 );
 
@@ -1186,6 +1201,37 @@ begin
    Chk_ManualCRC.Enabled:= Btn_Scrape.Enabled;
 
    Tbs_Scrape.TabVisible:= aValue;
+end;
+
+procedure TFrm_Editor.UpdateVideo(aGame: TGame);
+begin
+   // Start playing video if the video exists and the video tab is active
+   // else stop it
+   if (Pgc_Media.ActivePage = Tbs_Video)
+      and not (aGame.VideoPath.IsEmpty)
+      and FileExists(aGame.PhysicalVideoPath) then
+   begin
+      Wmp_Video.URL := 'file://' + aGame.PhysicalVideoPath;
+      Wmp_Video.controls.play;
+   end else begin
+      Wmp_Video.controls.stop;
+      Wmp_Video.URL := '';
+   end;
+
+   // Enable Remove video button if video exists -independent of active tab
+   if not (aGame.VideoPath.IsEmpty)
+      and FileExists(aGame.PhysicalVideoPath) then
+   begin
+      Btn_RemoveVideo.Enabled:= True;
+   end else begin
+      Btn_RemoveVideo.Enabled:= False;
+   end;
+end;
+
+procedure TFrm_Editor.Pgc_MediaChange(Sender: TObject);
+begin
+  if ( Lbx_Games.Count > 0 ) then
+     UpdateVideo( ( Lbx_Games.Items.Objects[Lbx_Games.ItemIndex] as TGame ) );
 end;
 
 //Chargement dans les différents champs des infos du jeu sélectionné
@@ -1215,11 +1261,7 @@ begin
    //on remet les évènements sur les champs
    FIsLoading:= False;
 
-   if not ( aGame.VideoPath.IsEmpty ) and
-         FileExists( aGame.PhysicalVideoPath ) then begin
-      Wmp_Video.URL:= 'file://' + aGame.PhysicalVideoPath;
-      Wmp_Video.controls.play;
-   end;
+   UpdateVideo(aGame);
 
    if not ( aGame.ImagePath.IsEmpty ) and
           FileExists( aGame.PhysicalImagePath ) then begin
@@ -1269,6 +1311,18 @@ begin
    if OpenFile.Execute and ( OpenFile.FileName <> '' ) then begin
       _Game:= ( Lbx_Games.Items.Objects[Lbx_Games.ItemIndex] as TGame );
       ChangeImage( OpenFile.FileName, _Game );
+      LoadGame( _Game );
+      Lbx_Games.SetFocus;
+   end;
+end;
+
+procedure TFrm_Editor.Btn_ChangeVideoClick(Sender: TObject);
+var
+   _Game: TGame;
+begin
+   if OpenFile.Execute and ( OpenFile.FileName <> '' ) then begin
+      _Game:= ( Lbx_Games.Items.Objects[Lbx_Games.ItemIndex] as TGame );
+      ChangeVideo( OpenFile.FileName, _Game );
       LoadGame( _Game );
       Lbx_Games.SetFocus;
    end;
@@ -1409,10 +1463,64 @@ begin
    Screen.Cursor:= crDefault;
 end;
 
+// Replace the video of a game.
+procedure TFrm_Editor.ChangeVideo( const aPath: string; aGame: TGame );
+var
+   _VideoLink: string;
+   _Node: IXMLNode;
+   _NodeAdded: Boolean;
+begin
+   _NodeAdded:= False;
+   Screen.Cursor:= crHourGlass;
+
+   // Open the gamelist XML file
+   XMLDoc.LoadFromFile( FRootPath + FCurrentFolder + Cst_GameListFileName );
+
+   // Get the first game node
+   _Node := XMLDoc.DocumentElement.ChildNodes.FindNode( Cst_Game );
+
+   // And we loop to find the node with the right Id
+   repeat
+      if ( _Node.ChildNodes.Nodes[Cst_Path].Text = aGame.RomPath ) then Break;
+      _Node := _Node.NextSibling;
+   until not Assigned( _Node );
+
+   // We write the path to the video
+   _VideoLink:= FXmlImageFolderPath + aGame.RomNameWoExt + Cst_ImageSuffixPng;
+
+   if not Assigned( _Node.ChildNodes.FindNode( Cst_ImageLink ) ) then begin
+      _Node.AddChild( Cst_ImageLink );
+      _NodeAdded:= True;
+   end;
+   _Node.ChildNodes.Nodes[Cst_ImageLink].Text:= _VideoLink;
+
+   // Save the file
+   if _NodeAdded then begin
+      XMLDoc.XML.Text:= Xml.Xmldoc.FormatXMLData( XMLDoc.XML.Text );
+      XMLDoc.Active:= True;
+   end;
+   XMLDoc.SaveToFile( FRootPath + FCurrentFolder + Cst_GameListFileName );
+   XMLDoc.Active:= False;
+
+   // And finally we update the associated TGame object
+   aGame.VideoPath:= _VideoLink;
+   aGame.PhysicalVideoPath:= FRootPath + FCurrentFolder +
+                             IncludeTrailingPathDelimiter( FImageFolder ) +
+                             aGame.RomNameWoExt + Cst_ImageSuffixPng;
+
+   Screen.Cursor:= crDefault;
+end;
+
 //Au click sur le bouton delete picture
 procedure TFrm_Editor.Btn_RemovePictureClick(Sender: TObject);
 begin
    DeleteGamePicture;
+   Lbx_Games.SetFocus;
+end;
+
+procedure TFrm_Editor.Btn_RemoveVideoClick(Sender: TObject);
+begin
+   DeleteGameVideo;
    Lbx_Games.SetFocus;
 end;
 
@@ -1457,6 +1565,47 @@ begin
    _Game.ImagePath:= '';
 
    //on recharge le jeu pour refléter les changements
+   LoadGame( _Game );
+end;
+
+// Remove the image from a game (in the XML and physically)
+procedure TFrm_Editor.DeleteGameVideo;
+var
+   _Game: TGame;
+   _GameListPath: string;
+   _Node: IXMLNode;
+begin
+   // Start by retrieving the corresponding TGame object
+   _Game:= ( Lbx_Games.Items.Objects[Lbx_Games.ItemIndex] as TGame );
+
+   // Build the path to the gamelist.xml
+   _GameListPath:= FRootPath + FCurrentFolder + Cst_GameListFileName;
+
+   // We open the xml file
+   XMLDoc.LoadFromFile( _GameListPath );
+
+   // Get the first "game" node
+   _Node := XMLDoc.DocumentElement.ChildNodes.FindNode( Cst_Game );
+
+   // And we loop to find the right node
+   repeat
+      if ( _Node.ChildNodes.Nodes[Cst_Path].Text = _Game.RomPath ) then Break;
+         _Node := _Node.NextSibling;
+   until not Assigned( _Node );
+
+   // Remove the node from the xml file
+   _Node.ChildNodes.FindNode( Cst_VideoLink ).Text:= '';
+   XMLDoc.Active:= True;
+   XMLDoc.SaveToFile( _GameListPath );
+   XMLDoc.Active:= False;
+
+   // Remove physical file
+   DeleteFile( _Game.PhysicalVideoPath );
+
+   // Update the TGame object
+   _Game.VideoPath:= '';
+
+   // Reload the game to reflect the changes
    LoadGame( _Game );
 end;
 
