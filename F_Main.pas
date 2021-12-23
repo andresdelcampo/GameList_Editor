@@ -187,6 +187,7 @@ type
       Img_BackGround: TImage;
       Btn_ChangeVideo: TButton;
       Btn_RemoveVideo: TButton;
+      Img_BackgroundVideo: TImage;
 
       procedure FormCreate(Sender: TObject);
       procedure FormDestroy(Sender: TObject);
@@ -293,6 +294,8 @@ type
       procedure DeleteGame( aGame: TGame );
       procedure DeleteGamePicture;
       procedure DeleteGameVideo;
+      procedure StartGameVideo( const aPath: string );
+      procedure StopGameVideo;
       procedure CheckMenuItem( aNumber: Integer; aLang: Boolean = False );
       procedure RemoveRegionFromGameName( aGame: TGame; aStartPos: Integer );
       procedure ConvertFieldsCase( aGame: TGame; aUnique: Boolean = False;
@@ -1217,6 +1220,22 @@ begin
    Tbs_Scrape.TabVisible:= aValue;
 end;
 
+procedure TFrm_Editor.StartGameVideo(const aPath: string);
+begin
+   Img_BackgroundVideo.Visible := false;
+   Wmp_Video.Visible := true;
+   Wmp_Video.URL := 'file://' + aPath;
+   Wmp_Video.controls.play;
+end;
+
+procedure TFrm_Editor.StopGameVideo;
+begin
+   Img_BackgroundVideo.Visible := true;
+   Wmp_Video.Visible := false;
+   Wmp_Video.controls.stop;
+   Wmp_Video.URL := '';
+end;
+
 procedure TFrm_Editor.UpdateVideo(aGame: TGame);
 begin
    // Start playing video if the video exists and the video tab is active
@@ -1225,11 +1244,9 @@ begin
       and not (aGame.VideoPath.IsEmpty)
       and FileExists(aGame.PhysicalVideoPath) then
    begin
-      Wmp_Video.URL := 'file://' + aGame.PhysicalVideoPath;
-      Wmp_Video.controls.play;
+      StartGameVideo(aGame.PhysicalVideoPath);
    end else begin
-      Wmp_Video.controls.stop;
-      Wmp_Video.URL := '';
+      StopGameVideo();
    end;
 
    // Enable Remove video button if video exists -independent of active tab
@@ -1489,9 +1506,7 @@ begin
    _NodeAdded:= False;
    Screen.Cursor:= crHourGlass;
 
-   // Stop playing video
-   Wmp_Video.controls.stop;
-   Wmp_Video.URL := '';
+   StopGameVideo();
 
    // Create the video directory if not existing
    if not TDirectory.Exists(FRootPath + FCurrentFolder + FVideoFolder ) then
@@ -1629,9 +1644,7 @@ begin
    XMLDoc.SaveToFile( _GameListPath );
    XMLDoc.Active:= False;
 
-   // Stop playing video
-   Wmp_Video.controls.stop;
-   Wmp_Video.URL := '';
+   StopGameVideo();
 
    // Remove physical file
    DeleteFile( _Game.PhysicalVideoPath );
