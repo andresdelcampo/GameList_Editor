@@ -1,4 +1,4 @@
-unit U_Resources;
+﻿unit U_Resources;
 
 interface
 
@@ -87,7 +87,7 @@ resourcestring
               'from a Recalbox or Retropie installation:' + sLineBreak +
               'https://www.recalbox.com/' + sLineBreak +
               'https://retropie.org.uk/' + sLineBreak + sLineBreak +
-              'It is written in Delphi 10.3 by NeeeeB and Andrés del Campo' + sLineBreak +
+              'It is written in Delphi 10.3 by NeeeeB and andresdelcampo' + sLineBreak +
               'Its source code is fully available at:' + sLineBreak +
               'https://github.com/andresdelcampo/GameList_Editor' + sLineBreak + sLineBreak +
               'Your Gamelist.xml should have been created' + sLineBreak +
@@ -388,6 +388,7 @@ const
    Cst_ImageSuffixPng = '-image.png';
    Cst_ImageSuffixJpg = '-image.jpg';
    Cst_ImageSuffixJpeg = '-image.jpeg';
+   Cst_VideoSuffixMp4 = '.mp4';
    Cst_DefaultPicsFolderPath = 'Resources\DefaultPictures\';
    Cst_DefaultImageNameSuffix = '-default.png';
    Cst_DefaultImageName = 'default.png';
@@ -400,7 +401,6 @@ const
    Cst_IniGodMode = 'GodMode';
    Cst_IniAutoHash = 'AutoHash';
    Cst_IniDelWoPrompt = 'DelWoPrompt';
-   Cst_IniDelGameVideo = 'DelGameVideo';
    Cst_IniPiPrompts = 'PiPrompts';
    Cst_ShowTips = 'ShowTips';
    Cst_IniGenesisLogo = 'GenesisLogo';
