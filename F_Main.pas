@@ -1030,7 +1030,7 @@ procedure TFrm_Editor.LoadGamesList( const aSystem: string );
    //Permet de vérifier si l'image existe "physiquement"
    //car il se peut que le lien soit renseigné mais que l'image
    //n'existe pas dans le dossier des images...
-   function CheckIfImageMissing( const aLink: string ): Boolean;
+   function CheckIfFileMissing( const aLink: string ): Boolean;
    begin
       Result:= aLink.IsEmpty or not ( FileExists( aLink ) );
    end;
@@ -1046,6 +1046,7 @@ begin
    _FilterIndex:= Cbx_Filter.ItemIndex;
    _ImageFolderFound:= False;
    _VideoFolderFound:= False;
+   StopGameVideo();
 
    //On essaye de récupérer la liste de jeux du système choisi
    if GSystemList.TryGetValue( aSystem, _TmpList ) then begin
@@ -1086,18 +1087,19 @@ begin
 
          //Attention usine à gaz booléenne pour gérer les filtres ^^
          if ( _FilterIndex = 0 ) or
-            ( ( _FilterIndex = 1 ) and ( CheckIfImageMissing( _TmpGame.PhysicalImagePath ) ) ) or
-            ( ( _FilterIndex = 2 ) and ( _TmpGame.ReleaseDate.IsEmpty ) ) or
-            ( ( _FilterIndex = 3 ) and ( _TmpGame.Players.IsEmpty ) ) or
-            ( ( _FilterIndex = 4 ) and ( _TmpGame.Rating.IsEmpty ) ) or
-            ( ( _FilterIndex = 5 ) and ( _TmpGame.Developer.IsEmpty ) ) or
-            ( ( _FilterIndex = 6 ) and ( _TmpGame.Publisher.IsEmpty ) ) or
-            ( ( _FilterIndex = 7 ) and ( _TmpGame.Description.IsEmpty ) ) or
-            ( ( _FilterIndex = 8 ) and ( _TmpGame.Genre.IsEmpty ) ) or
-            ( ( _FilterIndex = 9 ) and ( _TmpGame.Region.IsEmpty ) ) or
-            ( ( _FilterIndex = 10 ) and ( _TmpGame.Hidden = 1 ) ) or
-            ( ( _FilterIndex = 11 ) and ( _TmpGame.Favorite = 1 ) ) or
-            ( ( _FilterIndex = 12 ) and ( _TmpGame.IsOrphan ) ) then begin
+            ( ( _FilterIndex = 1 ) and ( CheckIfFileMissing( _TmpGame.PhysicalImagePath ) ) ) or
+            ( ( _FilterIndex = 2 ) and ( CheckIfFileMissing( _TmpGame.PhysicalVideoPath ) ) ) or
+            ( ( _FilterIndex = 3 ) and ( _TmpGame.ReleaseDate.IsEmpty ) ) or
+            ( ( _FilterIndex = 4 ) and ( _TmpGame.Players.IsEmpty ) ) or
+            ( ( _FilterIndex = 5 ) and ( _TmpGame.Rating.IsEmpty ) ) or
+            ( ( _FilterIndex = 6 ) and ( _TmpGame.Developer.IsEmpty ) ) or
+            ( ( _FilterIndex = 7 ) and ( _TmpGame.Publisher.IsEmpty ) ) or
+            ( ( _FilterIndex = 8 ) and ( _TmpGame.Description.IsEmpty ) ) or
+            ( ( _FilterIndex = 9 ) and ( _TmpGame.Genre.IsEmpty ) ) or
+            ( ( _FilterIndex = 10 ) and ( _TmpGame.Region.IsEmpty ) ) or
+            ( ( _FilterIndex = 11 ) and ( _TmpGame.Hidden = 1 ) ) or
+            ( ( _FilterIndex = 12 ) and ( _TmpGame.Favorite = 1 ) ) or
+            ( ( _FilterIndex = 13 ) and ( _TmpGame.IsOrphan ) ) then begin
 
             if ( not Chk_ListByRom.Checked ) and
                ( ( Edt_Search.Text = '' ) or
