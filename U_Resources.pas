@@ -388,6 +388,7 @@ const
    Cst_ImageSuffixPng = '-image.png';
    Cst_ImageSuffixJpg = '-image.jpg';
    Cst_ImageSuffixJpeg = '-image.jpeg';
+   Cst_VideoSuffixMp4 = '.mp4';
    Cst_DefaultPicsFolderPath = 'Resources\DefaultPictures\';
    Cst_DefaultImageNameSuffix = '-default.png';
    Cst_DefaultImageName = 'default.png';
@@ -400,7 +401,6 @@ const
    Cst_IniGodMode = 'GodMode';
    Cst_IniAutoHash = 'AutoHash';
    Cst_IniDelWoPrompt = 'DelWoPrompt';
-   Cst_IniDelGameVideo = 'DelGameVideo';
    Cst_IniPiPrompts = 'PiPrompts';
    Cst_ShowTips = 'ShowTips';
    Cst_IniGenesisLogo = 'GenesisLogo';

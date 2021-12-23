@@ -1054,7 +1054,7 @@ object Frm_Editor: TFrm_Editor
         Font.Style = []
         ParentFont = False
         ExplicitLeft = 0
-        ExplicitTop = 8
+        ExplicitTop = 0
         object Lbl_NbGamesFound: TLabel
           Left = 626
           Top = 123
@@ -2189,23 +2189,23 @@ object Frm_Editor: TFrm_Editor
         end
         object Lbl_Name: TLabel
           Left = 536
-          Top = 360
+          Top = 366
           Width = 27
-          Height = 13
+          Height = 18
           Caption = 'Name'
           Enabled = False
         end
         object Lbl_Region: TLabel
           Left = 1000
-          Top = 360
+          Top = 366
           Width = 33
-          Height = 13
+          Height = 18
           Caption = 'Region'
           Enabled = False
         end
         object Lbl_Date: TLabel
-          Left = 536
-          Top = 407
+          Left = 535
+          Top = 411
           Width = 23
           Height = 13
           Hint = 
@@ -2215,32 +2215,32 @@ object Frm_Editor: TFrm_Editor
           Enabled = False
         end
         object Lbl_Players: TLabel
-          Left = 671
-          Top = 407
+          Left = 670
+          Top = 411
           Width = 35
           Height = 13
           Caption = 'Players'
           Enabled = False
         end
         object Lbl_Rating: TLabel
-          Left = 808
-          Top = 407
+          Left = 807
+          Top = 411
           Width = 31
           Height = 13
           Caption = 'Rating'
           Enabled = False
         end
         object Lbl_Hidden: TLabel
-          Left = 944
-          Top = 407
+          Left = 943
+          Top = 411
           Width = 33
           Height = 13
           Caption = 'Hidden'
           Enabled = False
         end
         object Lbl_Favorite: TLabel
-          Left = 1077
-          Top = 407
+          Left = 1076
+          Top = 411
           Width = 40
           Height = 13
           Caption = 'Favorite'
@@ -2248,7 +2248,7 @@ object Frm_Editor: TFrm_Editor
         end
         object Lbl_Publisher: TLabel
           Left = 536
-          Top = 453
+          Top = 455
           Width = 43
           Height = 13
           Caption = 'Publisher'
@@ -2256,7 +2256,7 @@ object Frm_Editor: TFrm_Editor
         end
         object Lbl_Developer: TLabel
           Left = 768
-          Top = 453
+          Top = 455
           Width = 49
           Height = 13
           Caption = 'Developer'
@@ -2264,7 +2264,7 @@ object Frm_Editor: TFrm_Editor
         end
         object Lbl_Genre: TLabel
           Left = 1000
-          Top = 453
+          Top = 455
           Width = 29
           Height = 13
           Caption = 'Genre'
@@ -2322,8 +2322,8 @@ object Frm_Editor: TFrm_Editor
           OnKeyPress = Mmo_DescriptionKeyPress
         end
         object Edt_Rating: TEdit
-          Left = 805
-          Top = 423
+          Left = 804
+          Top = 427
           Width = 108
           Height = 21
           Enabled = False
@@ -2333,7 +2333,7 @@ object Frm_Editor: TFrm_Editor
         end
         object Edt_ReleaseDate: TEdit
           Left = 533
-          Top = 423
+          Top = 427
           Width = 108
           Height = 21
           Hint = 
@@ -2347,7 +2347,7 @@ object Frm_Editor: TFrm_Editor
         end
         object Edt_Developer: TEdit
           Left = 765
-          Top = 469
+          Top = 471
           Width = 185
           Height = 21
           Enabled = False
@@ -2356,7 +2356,7 @@ object Frm_Editor: TFrm_Editor
         end
         object Edt_Publisher: TEdit
           Left = 533
-          Top = 469
+          Top = 471
           Width = 185
           Height = 21
           Enabled = False
@@ -2365,7 +2365,7 @@ object Frm_Editor: TFrm_Editor
         end
         object Edt_Genre: TEdit
           Left = 997
-          Top = 469
+          Top = 471
           Width = 185
           Height = 21
           Enabled = False
@@ -2373,8 +2373,8 @@ object Frm_Editor: TFrm_Editor
           OnChange = FieldChange
         end
         object Edt_NbPlayers: TEdit
-          Left = 668
-          Top = 423
+          Left = 667
+          Top = 427
           Width = 108
           Height = 21
           Enabled = False
@@ -2383,7 +2383,7 @@ object Frm_Editor: TFrm_Editor
         end
         object Edt_Name: TEdit
           Left = 533
-          Top = 379
+          Top = 383
           Width = 417
           Height = 21
           Enabled = False
@@ -2422,7 +2422,7 @@ object Frm_Editor: TFrm_Editor
         end
         object Btn_ChangeAll: TButton
           Left = 528
-          Top = 274
+          Top = 276
           Width = 284
           Height = 25
           Caption = 'Change all missing pictures to default'
@@ -2459,7 +2459,7 @@ object Frm_Editor: TFrm_Editor
         end
         object Edt_Region: TEdit
           Left = 998
-          Top = 379
+          Top = 383
           Width = 185
           Height = 21
           Enabled = False
@@ -2517,8 +2517,8 @@ object Frm_Editor: TFrm_Editor
           OnClick = Btn_RemovePictureClick
         end
         object Cbx_Hidden: TComboBox
-          Left = 941
-          Top = 423
+          Left = 940
+          Top = 427
           Width = 108
           Height = 21
           Style = csDropDownList
@@ -2531,7 +2531,7 @@ object Frm_Editor: TFrm_Editor
         end
         object Cbx_Favorite: TComboBox
           Left = 1074
-          Top = 423
+          Top = 427
           Width = 108
           Height = 21
           Style = csDropDownList
@@ -2606,7 +2606,6 @@ object Frm_Editor: TFrm_Editor
           OnChange = Pgc_MediaChange
           object Tbs_Picture: TTabSheet
             Caption = 'Picture'
-            ExplicitTop = 1
             object Img_Game: TImage
               Left = 0
               Top = 0
@@ -6911,7 +6910,6 @@ object Frm_Editor: TFrm_Editor
           object Tbs_Video: TTabSheet
             Caption = 'Video'
             ImageIndex = 1
-            ExplicitTop = 1
             object Wmp_Video: TWindowsMediaPlayer
               Left = 0
               Top = 0
@@ -13570,11 +13568,6 @@ object Frm_Editor: TFrm_Editor
           Caption = 'Delete without prompt'
           Enabled = False
           OnClick = Mnu_DeleteWoPromptClick
-        end
-        object Mnu_DeleteGameVideo: TMenuItem
-          AutoCheck = True
-          Caption = 'Delete game video'
-          Enabled = False
         end
         object Mnu_AutoHash: TMenuItem
           AutoCheck = True
