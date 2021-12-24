@@ -7,13 +7,12 @@ uses
    Vcl.ExtCtrls, Vcl.Graphics, Vcl.Imaging.jpeg, Vcl.Imaging.pngimage,
    IdIOHandler, IdIOHandlerSocket, IdURI, IdIOHandlerStack, IdSSL, IdSSLOpenSSL,
    IdBaseComponent, IdComponent, IdException, IdTCPConnection, IdTCPClient, IdHTTP,
-   U_Resources;
+   U_Resources, System.Net.HttpClientComponent, System.Net.URLClient;
 
 type
    TDOwnThread = class( TThread )
    private
-      IndyHTTP: TIdHTTP;
-      IndySSL: TIdSSLIOHandlerSocketOpenSSL;
+      Net_HTTPClient: TNetHTTPClient;
       Img: TImage;
       Graph: TGraphic;
       procedure AddPicture;
@@ -34,23 +33,20 @@ uses
 constructor TDOwnThread.Create;
 begin
    inherited Create( True );
-   IndyHTTP:= TIdHTTP.Create;
-   IndySSL:= TIdSSLIOHandlerSocketOpenSSL.Create;
+
+   Net_HTTPClient:= TNetHTTPClient.Create(Net_HTTPClient);
    if Frm_Editor.FProxyUse then begin
-      IndyHTTP.ProxyParams.ProxyUsername:= Frm_Editor.FProxyUser;
-      IndyHTTP.ProxyParams.ProxyPassword:= Frm_Editor.FProxyPwd;
-      IndyHTTP.ProxyParams.ProxyServer:= Frm_Editor.FProxyServer;
-      IndyHTTP.ProxyParams.ProxyPort:= StrToInt( Frm_Editor.FProxyPort );
+      Net_HTTPClient.ProxySettings := TProxySettings.Create(
+                                          Frm_Editor.FProxyServer,
+                                          StrToInt( Frm_Editor.FProxyPort ),
+                                          Frm_Editor.FProxyUser,
+                                          Frm_Editor.FProxyPwd);
    end else begin
-      IndyHTTP.ProxyParams.ProxyUsername:= '';
-      IndyHTTP.ProxyParams.ProxyPassword:= '';
-      IndyHTTP.ProxyParams.ProxyServer:= '';
-      IndyHTTP.ProxyParams.ProxyPort:= 0;
+      Net_HTTPClient.ProxySettings := TProxySettings.Create('', 0, '', '');
    end;
 
-   IndyHTTP.IOHandler:= IndySSL;
-   IndyHTTP.Request.UserAgent:= 'Mozilla/3.0 (compatible; Indy Library)';
-   IndyHTTP.Request.Accept:= 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8';
+   //IndyHTTP.Request.UserAgent:= 'Mozilla/3.0 (compatible; Indy Library)';
+   //IndyHTTP.Request.Accept:= 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8';
 
    Img:= TImage.Create( nil );
    Img.AutoSize:= True;
@@ -63,8 +59,7 @@ end;
 
 destructor TDOwnThread.Destroy;
 begin
-   IndyHTTP.Free;
-   IndySSL.Free;
+   Net_HTTPClient.Free;
    inherited;
 end;
 
@@ -75,7 +70,7 @@ begin
    Stream:= TBytesStream.Create;
    try
       try
-         IndyHTTP.Get( Url, Stream );
+         Net_HTTPClient.Get( Url, Stream );
          if ( Stream.Size = 0 ) then begin
             Frm_Editor.WarnUser( Rst_StreamError );
             Exit;

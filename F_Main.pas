@@ -13,8 +13,9 @@ uses
    F_MoreInfos, F_About, F_Help, F_ConfigureSSH, U_gnugettext, U_Resources, U_Game,
    F_ConfigureNetwork, F_AdvNameEditor, U_DownloadThread,
    IdIOHandler, IdIOHandlerSocket, IdURI, IdIOHandlerStack, IdSSL, IdSSLOpenSSL,
-   IdBaseComponent, IdComponent, IdException, IdTCPConnection, IdTCPClient, IdHTTP,
-  Vcl.OleCtrls, WMPLib_TLB;
+   IdBaseComponent, IdComponent, IdException, IdTCPConnection, IdTCPClient,
+   Vcl.OleCtrls, WMPLib_TLB, System.Net.URLClient,
+   System.Net.HttpClient, System.Net.HttpClientComponent, IdHTTP;
 
 type
    TMediaInfo = class
@@ -138,8 +139,6 @@ type
       Pnl_Top: TPanel;
       Scl_Pictures: TScrollBox;
       Img_ScreenScraper: TImage;
-      Ind_HTTP: TIdHTTP;
-      IdSSLIOHandlerSocketOpenSSL: TIdSSLIOHandlerSocketOpenSSL;
       Btn_Scrape: TButton;
       Img_Loading: TImage;
       Mmo_ScrapeDescription: TMemo;
@@ -188,6 +187,7 @@ type
       Btn_ChangeVideo: TButton;
       Btn_RemoveVideo: TButton;
       Img_BackgroundVideo: TImage;
+    Net_HTTPClient: TNetHTTPClient;
 
       procedure FormCreate(Sender: TObject);
       procedure FormDestroy(Sender: TObject);
@@ -2857,15 +2857,13 @@ procedure TFrm_Editor.Tbs_ScrapeShow(Sender: TObject);
 begin
    //si proxy, on le renseigne
    if FProxyUse then begin
-      Ind_HTTP.ProxyParams.ProxyUsername:= FProxyUser;
-      Ind_HTTP.ProxyParams.ProxyPassword:= FProxyPwd;
-      Ind_HTTP.ProxyParams.ProxyServer:= FProxyServer;
-      Ind_HTTP.ProxyParams.ProxyPort:= StrToInt( FProxyPort );
+      Net_HTTPClient.ProxySettings := TProxySettings.Create(
+                                          FProxyServer,
+                                          StrToInt( FProxyPort ),
+                                          FProxyUser,
+                                          FProxyPwd);
    end else begin
-      Ind_HTTP.ProxyParams.ProxyUsername:= '';
-      Ind_HTTP.ProxyParams.ProxyPassword:= '';
-      Ind_HTTP.ProxyParams.ProxyServer:= '';
-      Ind_HTTP.ProxyParams.ProxyPort:= 0;
+      Net_HTTPClient.ProxySettings := TProxySettings.Create('', 0, '', '');
    end;
 
    //on désactive les items du mainmenu qui ne doivent pas être utilisés
@@ -2916,7 +2914,7 @@ begin
    Stream:= TBytesStream.Create;
    try
       try
-         Ind_HTTP.Get( Query, Stream );
+         Net_HTTPClient.Get( Query, Stream );
          if ( Stream.Size = 0 ) then begin
             WarnUser( Rst_StreamError );
             Exit;
