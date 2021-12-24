@@ -5,9 +5,8 @@ interface
 uses
    System.Classes, System.SysUtils,
    Vcl.ExtCtrls, Vcl.Graphics, Vcl.Imaging.jpeg, Vcl.Imaging.pngimage,
-   IdIOHandler, IdIOHandlerSocket, IdURI, IdIOHandlerStack, IdSSL, IdSSLOpenSSL,
-   IdBaseComponent, IdComponent, IdException, IdTCPConnection, IdTCPClient, IdHTTP,
-   U_Resources, System.Net.HttpClientComponent, System.Net.URLClient;
+   U_Resources, System.Net.HttpClientComponent, System.Net.URLClient,
+   System.Net.HttpClient;
 
 type
    TDOwnThread = class( TThread )
@@ -33,7 +32,6 @@ uses
 constructor TDOwnThread.Create;
 begin
    inherited Create( True );
-
    Net_HTTPClient:= TNetHTTPClient.Create(Net_HTTPClient);
    if Frm_Editor.FProxyUse then begin
       Net_HTTPClient.ProxySettings := TProxySettings.Create(
@@ -44,9 +42,6 @@ begin
    end else begin
       Net_HTTPClient.ProxySettings := TProxySettings.Create('', 0, '', '');
    end;
-
-   //IndyHTTP.Request.UserAgent:= 'Mozilla/3.0 (compatible; Indy Library)';
-   //IndyHTTP.Request.Accept:= 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8';
 
    Img:= TImage.Create( nil );
    Img.AutoSize:= True;
@@ -83,22 +78,18 @@ begin
          Img.Picture.Graphic:= Graph;
       except
          //gestion des erreurs de connexion
-         on E: EIdHTTPProtocolException do begin
-            case E.ErrorCode of
-               400: Frm_Editor.WarnUser( Rst_ServerError1 );
-               401: Frm_Editor.WarnUser( Rst_ServerError2 );
-               403: Frm_Editor.WarnUser( Rst_ServerError3 );
-               404: Frm_Editor.WarnUser( Rst_ServerError4 );
-               423: Frm_Editor.WarnUser( Rst_ServerError5 );
-               426: Frm_Editor.WarnUser( Rst_ServerError6 );
-               429: Frm_Editor.WarnUser( Rst_ServerError7 );
-            end;
-            Exit;
-         end;
-         on E: EIdException do begin
-            Frm_Editor.WarnUser( Rst_ServerError8 );
-            Exit;
-         end;
+
+         //   case E.ErrorCode of
+         //      400: Frm_Editor.WarnUser( Rst_ServerError1 );
+         //      401: Frm_Editor.WarnUser( Rst_ServerError2 );
+         //      403: Frm_Editor.WarnUser( Rst_ServerError3 );
+         //      404: Frm_Editor.WarnUser( Rst_ServerError4 );
+         //      423: Frm_Editor.WarnUser( Rst_ServerError5 );
+         //      426: Frm_Editor.WarnUser( Rst_ServerError6 );
+         //      429: Frm_Editor.WarnUser( Rst_ServerError7 );
+         //   end;
+         Frm_Editor.WarnUser( Rst_ServerError8 );
+         Exit;
       end;
    finally
       Stream.Free;

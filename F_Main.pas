@@ -12,10 +12,9 @@ uses
    Xml.omnixmldom, Xml.xmldom, Xml.XMLIntf, Xml.XMLDoc, Xml.Win.msxmldom,
    F_MoreInfos, F_About, F_Help, F_ConfigureSSH, U_gnugettext, U_Resources, U_Game,
    F_ConfigureNetwork, F_AdvNameEditor, U_DownloadThread,
-   IdIOHandler, IdIOHandlerSocket, IdURI, IdIOHandlerStack, IdSSL, IdSSLOpenSSL,
-   IdBaseComponent, IdComponent, IdException, IdTCPConnection, IdTCPClient,
+   IdURI,
    Vcl.OleCtrls, WMPLib_TLB, System.Net.URLClient,
-   System.Net.HttpClient, System.Net.HttpClientComponent, IdHTTP;
+   System.Net.HttpClient, System.Net.HttpClientComponent;
 
 type
    TMediaInfo = class
@@ -187,7 +186,7 @@ type
       Btn_ChangeVideo: TButton;
       Btn_RemoveVideo: TButton;
       Img_BackgroundVideo: TImage;
-    Net_HTTPClient: TNetHTTPClient;
+      Net_HTTPClient: TNetHTTPClient;
 
       procedure FormCreate(Sender: TObject);
       procedure FormDestroy(Sender: TObject);
@@ -1941,17 +1940,17 @@ begin
       Lbx_Games.ItemIndex:= _Index;
    end;
 
-   if ( Lbx_Games.Count > 0 ) then begin
-      Lbx_Games.Selected[Lbx_Games.ItemIndex]:= True;
-      LoadGame( ( Lbx_Games.Items.Objects[Lbx_Games.ItemIndex] as TGame ) );
-   end;
-
    if aScrape then begin
       Pgc_Editor.ActivePage:= Tbs_Main;
       Tbs_ScrapeHide( nil );
    end;
 
-    Screen.Cursor:= crDefault;
+   if ( Lbx_Games.Count > 0 ) then begin
+      Lbx_Games.Selected[Lbx_Games.ItemIndex]:= True;
+      LoadGame( ( Lbx_Games.Items.Objects[Lbx_Games.ItemIndex] as TGame ) );
+   end;
+
+   Screen.Cursor:= crDefault;
 end;
 
 //Diverse sections du menu sélection
@@ -2924,22 +2923,17 @@ begin
          XMLDoc.SaveToFile( FTempXmlPath );
       except
          //gestion des erreurs de connexion
-         on E: EIdHTTPProtocolException do begin
-            case E.ErrorCode of
-               400: WarnUser( Rst_ServerError1 );
-               401: WarnUser( Rst_ServerError2 );
-               403: WarnUser( Rst_ServerError3 );
-               404: WarnUser( Rst_ServerError4 );
-               423: WarnUser( Rst_ServerError5 );
-               426: WarnUser( Rst_ServerError6 );
-               429: WarnUser( Rst_ServerError7 );
-            end;
-            Exit;
-         end;
-         on E: EIdException do begin
-            WarnUser( Rst_ServerError8 );
-            Exit;
-         end;
+            //case E.HelpContext of
+            //   400: WarnUser( Rst_ServerError1 );
+            //   401: WarnUser( Rst_ServerError2 );
+            //   403: WarnUser( Rst_ServerError3 );
+            //   404: WarnUser( Rst_ServerError4 );
+            //   423: WarnUser( Rst_ServerError5 );
+            //   426: WarnUser( Rst_ServerError6 );
+            //   429: WarnUser( Rst_ServerError7 );
+            //end;
+         WarnUser( Rst_ServerError8 );
+         Exit;
       end;
    finally
       Stream.Free;
@@ -2956,7 +2950,7 @@ procedure TFrm_Editor.ParseXml;
    begin
       Result:= TDictionary<string, string>.Create;
       for ii:= 0 to Pred( aNodeList.Count ) do begin
-         Result.Add( aNodeList[ii].Attributes[aAttName], aNodeList[ii].Text );
+         Result.AddOrSetValue( aNodeList[ii].Attributes[aAttName], aNodeList[ii].Text );
       end;
    end;
 
@@ -2971,12 +2965,12 @@ procedure TFrm_Editor.ParseXml;
       id:= aNodeList[0].Attributes[aAttId];
       for ii:= 0 to Pred( aNodeList.Count ) do begin
          if ( aNodeList[ii].Attributes[aAttId] = id ) then
-            List.Add( aNodeList[ii].Attributes[aAttLang], aNodeList[ii].Text )
+            List.AddOrSetValue ( aNodeList[ii].Attributes[aAttLang], aNodeList[ii].Text )
          else begin
             Result.Add( id, List );
             id:= aNodeList[ii].Attributes[aAttId];
             List:= TDictionary<string, string>.Create;
-            List.Add( aNodeList[ii].Attributes[aAttLang], aNodeList[ii].Text );
+            List.AddOrSetValue ( aNodeList[ii].Attributes[aAttLang], aNodeList[ii].Text );
          end;
       end;
       Result.Add( id, List );
@@ -3078,11 +3072,15 @@ begin
       end;
    end;
 
-   RootNode:= XMLDoc.ChildNodes[Cst_DataNode].ChildNodes[Cst_UserNode];
-   Node:= RootNode.ChildNodes.FindNode( Cst_ThreadNode );
-   if Assigned( Node ) then begin
-      if not TryStrToInt( Node.Text, FMaxThreads ) then
-         FMaxThreads:= 1;
+   try
+      RootNode:= XMLDoc.ChildNodes[Cst_DataNode].ChildNodes[Cst_UserNode];
+      Node:= RootNode.ChildNodes.FindNode( Cst_ThreadNode );
+      if Assigned( Node ) then begin
+        if not TryStrToInt( Node.Text, FMaxThreads ) then
+           FMaxThreads:= 1;
+      end;
+   except
+      FMaxThreads:= 1;
    end;
 
    //on delete le fichier xml temporaire (plus besoin)
