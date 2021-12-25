@@ -1050,7 +1050,7 @@ begin
    _FilterIndex:= Cbx_Filter.ItemIndex;
    _ImageFolderFound:= False;
    _VideoFolderFound:= False;
-   StopGameVideo();
+   StopGameVideo;
 
    //On essaye de récupérer la liste de jeux du système choisi
    if GSystemList.TryGetValue( aSystem, _TmpList ) then begin
@@ -1252,7 +1252,7 @@ begin
    begin
       StartGameVideo(aGame.PhysicalVideoPath);
    end else begin
-      StopGameVideo();
+      StopGameVideo;
    end;
 
    // Enable Remove video button if video exists -independent of active tab
@@ -2909,6 +2909,8 @@ end;
 //A l'affichage de l'onglet Scrape
 procedure TFrm_Editor.Tbs_ScrapeShow(Sender: TObject);
 begin
+   StopGameVideo;
+
    //si proxy, on le renseigne
    if FProxyUse then begin
       Net_HTTPClient.ProxySettings := TProxySettings.Create(
@@ -2934,7 +2936,9 @@ begin
    if Assigned( FScrapedGame ) and
       ( ( Lbx_Games.Items.Objects[Lbx_Games.ItemIndex] as TGame ) =
       FScrapedGame ) then
-      LoadGame( FScrapedGame );
+      LoadGame( FScrapedGame )
+   else
+      UpdateVideo( Lbx_Games.Items.Objects[Lbx_Games.ItemIndex] as TGame );
 
    //on réactive les items du mainmenu désactivés à l'entrée dans l'onglet
    Mnu_Actions.Enabled:= True;
