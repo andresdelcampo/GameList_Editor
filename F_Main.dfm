@@ -17581,7 +17581,7 @@ object Frm_Editor: TFrm_Editor
         end
         object Btn_ScrapeSave: TButton
           Left = 976
-          Top = 559
+          Top = 541
           Width = 209
           Height = 25
           Caption = 'Save Changes for this game'
@@ -17599,7 +17599,7 @@ object Frm_Editor: TFrm_Editor
         end
         object Btn_ScrapeLower: TButton
           Left = 976
-          Top = 507
+          Top = 498
           Width = 209
           Height = 25
           Caption = 'Convert all text to lowercase'
@@ -17609,7 +17609,7 @@ object Frm_Editor: TFrm_Editor
         end
         object Btn_ScrapeUpper: TButton
           Left = 976
-          Top = 476
+          Top = 467
           Width = 209
           Height = 25
           Caption = 'Convert all text to uppercase'
@@ -17619,7 +17619,7 @@ object Frm_Editor: TFrm_Editor
         end
         object Chk_ScrapePicture: TCheckBox
           Left = 976
-          Top = 590
+          Top = 593
           Width = 209
           Height = 17
           Caption = 'Save picture'
@@ -17629,7 +17629,7 @@ object Frm_Editor: TFrm_Editor
         end
         object Chk_ScrapeInfos: TCheckBox
           Left = 976
-          Top = 611
+          Top = 614
           Width = 209
           Height = 17
           Caption = 'Save infos'
@@ -17736,6 +17736,26 @@ object Frm_Editor: TFrm_Editor
           Checked = True
           State = cbChecked
           TabOrder = 7
+        end
+        object Chk_ScrapeVideo: TCheckBox
+          Left = 976
+          Top = 572
+          Width = 209
+          Height = 17
+          Caption = 'Save video'
+          Enabled = False
+          TabOrder = 27
+          OnClick = Chk_ScrapeClick
+        end
+        object Chk_Video: TCheckBox
+          Left = 837
+          Top = 331
+          Width = 90
+          Height = 17
+          Caption = 'Video'
+          Checked = True
+          State = cbChecked
+          TabOrder = 28
         end
       end
     end

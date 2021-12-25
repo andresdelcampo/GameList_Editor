@@ -165,6 +165,7 @@ type
       Btn_ScrapeLower: TButton;
       Btn_ScrapeUpper: TButton;
       Chk_ScrapePicture: TCheckBox;
+      Chk_ScrapeVideo: TCheckBox;
       Chk_ScrapeInfos: TCheckBox;
       Chk_ManualCRC: TCheckBox;
       Edt_ManualCRC: TEdit;
@@ -176,6 +177,7 @@ type
       Chk_Title: TCheckBox;
       Chk_ArcadeBox: TCheckBox;
       Chk_Wheel: TCheckBox;
+      Chk_Video: TCheckBox;
       Mnu_Reload: TMenuItem;
       Pgc_Media: TPageControl;
       Tbs_Picture: TTabSheet;
@@ -260,6 +262,7 @@ type
       FVideoFolder: string;
       FXmlImageFolderPath: string;
       FXmlVideoFolderPath: string;
+      FVideoScrapeLink: string;
       FIsLoading: Boolean;
       FGodMode, FAutoHash, FDelWoPrompt, FGenesisLogo,
       FShowTips, FFolderIsOnPi, FPiPrompts, FSysIsRecal,
@@ -283,7 +286,7 @@ type
       procedure LoadGamesList( const aSystem: string );
       procedure LoadGame( aGame: TGame );
       procedure ClearAllFields;
-      procedure SaveChangesToGamelist( aScrape, aSavePic, aSaveInfos: Boolean );
+      procedure SaveChangesToGamelist( aScrape, aSaveVideo, aSavePic, aSaveInfos: Boolean );
       procedure EnableControls( aValue: Boolean );
       procedure EnableComponents( aValue: Boolean );
       procedure CheckIfChangesToSave;
@@ -323,6 +326,7 @@ type
                             Caption: array of string; dlgcaption: string ): Integer;
 
       //Méthodes relatives à l'onglet de scrape
+      procedure ClearScrapeMedia;
       procedure ParseXml;
       procedure DisplayPictures;
       procedure FillFields;
@@ -332,7 +336,8 @@ type
       procedure ThreadTerminated( Sender: TObject );
       procedure EmptyScrapeFields;
       procedure ConvertScrapeToUpOrLow( aUp: Boolean = False );
-      procedure UpdateVideo(aGame: TGame);
+      procedure UpdateVideo( aGame: TGame );
+      procedure SaveLinkToFile( aLink, aPath: string );
 
       function GetGameXml( const aSysId: string; aGame: TGame ): Boolean;
       function GetFileSize( const aPath: string ): string;
@@ -1305,6 +1310,7 @@ begin
             Btn_RemovePicture.Enabled:= True;
             //on affiche l'image background que si le jeu n'a pas d'image
             Img_BackGround.Visible:= ( Img_Game.Picture.Graphic = nil );
+            Img_Game.Visible:= ( Img_Game.Picture.Graphic <> nil );
             Btn_Scrape.Enabled:= FileExists( aGame.PhysicalRomPath );
             Chk_ManualCRC.Enabled:= Btn_Scrape.Enabled;
             Exit;
@@ -1320,6 +1326,7 @@ begin
             Btn_RemovePicture.Enabled:= True;
             //on affiche l'image background que si le jeu n'a pas d'image
             Img_BackGround.Visible:= ( Img_Game.Picture.Graphic = nil );
+            Img_Game.Visible:= ( Img_Game.Picture.Graphic <> nil );
             Btn_Scrape.Enabled:= FileExists( aGame.PhysicalRomPath );
             Chk_ManualCRC.Enabled:= Btn_Scrape.Enabled;
             Exit;
@@ -1331,6 +1338,8 @@ begin
       Btn_RemovePicture.Enabled:= False;
       Btn_Scrape.Enabled:= FileExists( aGame.PhysicalRomPath );
       Chk_ManualCRC.Enabled:= Btn_Scrape.Enabled;
+      Img_BackGround.Visible:= True;
+      Img_Game.Visible:= False;
    end;
 end;
 
@@ -1689,7 +1698,7 @@ end;
 //Action au click sur bouton "save changes"
 procedure TFrm_Editor.Btn_SaveChangesClick( Sender: TObject );
 begin
-   SaveChangesToGamelist( False, False, True );
+   SaveChangesToGamelist( False, False, False, True );
    Btn_SaveChanges.Enabled:= False;
 //   Lbx_Games.SetFocus;
    if Assigned( FPrevWinControl ) then
@@ -1720,7 +1729,7 @@ end;
 
 //Enregistre les changements effectués pour le jeu dans le fichier .xml
 //et rafraichit le listbox si besoin
-procedure TFrm_Editor.SaveChangesToGamelist( aScrape, aSavePic, aSaveInfos: Boolean );
+procedure TFrm_Editor.SaveChangesToGamelist( aScrape, aSaveVideo, aSavePic, aSaveInfos: Boolean );
 
    //Permet de s'assurer q'un noeud existe
    function NodeExists( aNode: IXMLNode; const aNodeName: string ): Boolean;
@@ -1733,224 +1742,270 @@ procedure TFrm_Editor.SaveChangesToGamelist( aScrape, aSavePic, aSaveInfos: Bool
 var
    _Node: IXMLNode;
    _Game: TGame;
-   _GameListPath, _Date, _NewName, _ImageLink,
+   _GameListPath, _Date, _NewName, _ImageLink, _VideoLink,
    Name, Region, Rating, Developer, Players,
-   Description, Publisher, Date, Genre: string;
+   Description, Publisher, Date, Genre, VideoPath: string;
    _NodeAdded, _NameChanged: Boolean;
    _Index: Integer;
 begin
    Screen.Cursor:= crHourGlass;
 
-   _NodeAdded:= False;
-   _NameChanged:= False;
+   try
+      _NodeAdded:= False;
+      _NameChanged:= False;
 
-   //On récupère le chemin du fichier gamelist.xml
-   _GameListPath:= FRootPath + FCurrentFolder + Cst_GameListFileName;
+      //On récupère le chemin du fichier gamelist.xml
+      _GameListPath:= FRootPath + FCurrentFolder + Cst_GameListFileName;
 
-   //On récupère l'objet TGame qu'on souhaite modifier
-   if aScrape then _Game:= FScrapedGame
-   else _Game:= ( Lbx_Games.Items.Objects[Lbx_Games.ItemIndex] as TGame );
+      //On récupère l'objet TGame qu'on souhaite modifier
+      if aScrape then _Game:= FScrapedGame
+      else _Game:= ( Lbx_Games.Items.Objects[Lbx_Games.ItemIndex] as TGame );
 
-   _Index:= Lbx_Games.ItemIndex;
+      _Index:= Lbx_Games.ItemIndex;
 
-   //On ouvre le fichier xml
-   XMLDoc.LoadFromFile( _GameListPath );
+      //On ouvre le fichier xml
+      XMLDoc.LoadFromFile( _GameListPath );
 
-   //On récupère le premier noeud "game"
-   _Node := XMLDoc.DocumentElement.ChildNodes.FindNode( Cst_Game );
-   if not Assigned( _Node) then Exit;
+      //On récupère le premier noeud "game"
+      _Node := XMLDoc.DocumentElement.ChildNodes.FindNode( Cst_Game );
+      if not Assigned( _Node) then Exit;
 
-   //Et on boucle pour trouver le bon noeud
-   repeat
-      if ( _Node.ChildNodes.Nodes[Cst_Path].Text = _Game.RomPath ) then Break;
-      _Node:= _Node.NextSibling;
-   until not Assigned( _Node );
-   if not Assigned( _Node ) then Exit;
+      //Et on boucle pour trouver le bon noeud
+      repeat
+         if ( _Node.ChildNodes.Nodes[Cst_Path].Text = _Game.RomPath ) then Break;
+         _Node:= _Node.NextSibling;
+      until not Assigned( _Node );
+      if not Assigned( _Node ) then Exit;
 
-   if aSaveInfos then begin
-      //On peut maintenant mettre les infos à jour dans le xml si besoin
-      if aScrape then Name:= Edt_ScrapeName.Text
-      else Name:= Edt_Name.Text;
-      if not ( _Game.Name.Equals( Name ) ) then begin
-         _Node.ChildNodes.Nodes[Cst_Name].Text:= Name;
-         _Game.Name:= Name;
-         Lbx_Games.Items[Lbx_Games.ItemIndex]:= Name;
-         _NameChanged:= True;
-         _NewName:= Name;
-      end;
-
-      if aScrape then Genre:= Edt_ScrapeGenre.Text
-      else Genre:= Edt_Genre.Text;
-      if not ( _Game.Genre.Equals( Genre ) ) then begin
-         if not ( NodeExists( _Node, Cst_Genre ) ) then begin
-            _Node.AddChild( Cst_Genre );
-            _NodeAdded:= True;
+      if aSaveInfos then begin
+         //On peut maintenant mettre les infos à jour dans le xml si besoin
+         if aScrape then Name:= Edt_ScrapeName.Text
+         else Name:= Edt_Name.Text;
+         if not ( _Game.Name.Equals( Name ) ) then begin
+            _Node.ChildNodes.Nodes[Cst_Name].Text:= Name;
+            _Game.Name:= Name;
+            Lbx_Games.Items[Lbx_Games.ItemIndex]:= Name;
+            _NameChanged:= True;
+            _NewName:= Name;
          end;
-         _Node.ChildNodes.Nodes[Cst_Genre].Text:= Genre;
-         _Game.Genre:= Genre;
-      end;
 
-      if aScrape then Rating:= Edt_ScrapeRating.Text
-      else Rating:= Edt_Rating.Text;
-      if not ( _Game.Rating.Equals( Rating ) ) then begin
-         if not ( NodeExists( _Node, Cst_Rating ) ) then begin
-            _Node.AddChild( Cst_Rating );
-            _NodeAdded:= True;
-         end;
-         _Node.ChildNodes.Nodes[Cst_Rating].Text:= Rating;
-         _Game.Rating:= Rating;
-      end;
-
-      if aScrape then Players:= Edt_ScrapePlayers.Text
-      else Players:= Edt_NbPlayers.Text;
-      if not ( _Game.Players.Equals( Players ) ) then begin
-         if not ( NodeExists( _Node, Cst_Players ) ) then begin
-            _Node.AddChild( Cst_Players );
-            _NodeAdded:= True;
-         end;
-         _Node.ChildNodes.Nodes[Cst_Players].Text:= Players;
-         _Game.Players:= Players;
-      end;
-
-      if aScrape then Developer:= Edt_ScrapeDeveloper.Text
-      else Developer:= Edt_Developer.Text;
-      if not ( _Game.Developer.Equals( Developer ) ) then begin
-         if not ( NodeExists( _Node, Cst_Developer ) ) then begin
-            _Node.AddChild( Cst_Developer );
-            _NodeAdded:= True;
-         end;
-         _Node.ChildNodes.Nodes[Cst_Developer].Text:= Developer;
-         _Game.Developer:= Developer;
-      end;
-
-      if aScrape then Date:= Edt_ScrapeDate.Text
-      else Date:= Edt_ReleaseDate.Text;
-      if not ( _Game.ReleaseDate.Equals( Date ) ) then begin
-         if not ( NodeExists( _Node, Cst_ReleaseDate ) ) then begin
-            _Node.AddChild( Cst_ReleaseDate );
-            _NodeAdded:= True;
-         end;
-         _Date:= FormatDateFromString( Date, True );
-         if not _Date.IsEmpty then
-            _Game.ReleaseDate:= Date
-         else begin
-            _Game.ReleaseDate:= '';
-            if aScrape then Edt_ScrapeDate.Text:= ''
-            else Edt_ReleaseDate.Text:= '';
-         end;
-         _Node.ChildNodes.Nodes[Cst_ReleaseDate].Text:= _Date;
-      end;
-
-      if aScrape then Publisher:= Edt_ScrapePublisher.Text
-      else Publisher:= Edt_Publisher.Text;
-      if not ( _Game.Publisher.Equals( Publisher ) ) then begin
-         if not ( NodeExists( _Node, Cst_Publisher ) ) then begin
-            _Node.AddChild( Cst_Publisher );
-            _NodeAdded:= True;
-         end;
-         _Node.ChildNodes.Nodes[Cst_Publisher].Text:= Publisher;
-         _Game.Publisher:= Publisher;
-      end;
-
-      if aScrape then Description:= Mmo_ScrapeDescription.Text
-      else Description:= Mmo_Description.Text;
-      if not ( _Game.Description.Equals( Description ) ) then begin
-         if not ( NodeExists( _Node, Cst_Description ) ) then begin
-            _Node.AddChild( Cst_Description );
-            _NodeAdded:= True;
-         end;
-         _Node.ChildNodes.Nodes[Cst_Description].Text:= Description;
-         _Game.Description:= Description;
-      end;
-
-      if aScrape then Region:= Edt_ScrapeRegion.Text
-      else Region:= Edt_Region.Text;
-      if not ( _Game.Region.Equals( Region ) ) then begin
-         if not ( NodeExists( _Node, Cst_Region ) ) then begin
-            _Node.AddChild( Cst_Region );
-            _NodeAdded:= True;
-         end;
-         _Node.ChildNodes.Nodes[Cst_Region].Text:= Region;
-         _Game.Region:= Region;
-      end;
-
-      if not aScrape then begin
-         if not ( _Game.Hidden = Cbx_Hidden.ItemIndex ) then begin
-            if not ( NodeExists( _Node, Cst_Hidden ) ) then begin
-               _Node.AddChild( Cst_Hidden );
+         if aScrape then Genre:= Edt_ScrapeGenre.Text
+         else Genre:= Edt_Genre.Text;
+         if not ( _Game.Genre.Equals( Genre ) ) then begin
+            if not ( NodeExists( _Node, Cst_Genre ) ) then begin
+               _Node.AddChild( Cst_Genre );
                _NodeAdded:= True;
             end;
-            if ( Cbx_Hidden.ItemIndex = 0 ) then _Node.ChildNodes.Nodes[Cst_Hidden].Text:= Cst_False
-            else _Node.ChildNodes.Nodes[Cst_Hidden].Text:= Cst_True;
-            _Game.Hidden:= Cbx_Hidden.ItemIndex;
+            _Node.ChildNodes.Nodes[Cst_Genre].Text:= Genre;
+            _Game.Genre:= Genre;
          end;
 
-         if not ( _Game.Favorite = Cbx_Favorite.ItemIndex ) then begin
-            if not ( NodeExists( _Node, Cst_Favorite ) ) then begin
-               _Node.AddChild( Cst_Favorite );
+         if aScrape then Rating:= Edt_ScrapeRating.Text
+         else Rating:= Edt_Rating.Text;
+         if not ( _Game.Rating.Equals( Rating ) ) then begin
+            if not ( NodeExists( _Node, Cst_Rating ) ) then begin
+               _Node.AddChild( Cst_Rating );
                _NodeAdded:= True;
             end;
-            if ( Cbx_Favorite.ItemIndex = 0 ) then _Node.ChildNodes.Nodes[Cst_Favorite].Text:= Cst_False
-            else _Node.ChildNodes.Nodes[Cst_Favorite].Text:= Cst_True;
-            _Game.Favorite:= Cbx_Favorite.ItemIndex;
+            _Node.ChildNodes.Nodes[Cst_Rating].Text:= Rating;
+            _Game.Rating:= Rating;
+         end;
+
+         if aScrape then Players:= Edt_ScrapePlayers.Text
+         else Players:= Edt_NbPlayers.Text;
+         if not ( _Game.Players.Equals( Players ) ) then begin
+            if not ( NodeExists( _Node, Cst_Players ) ) then begin
+               _Node.AddChild( Cst_Players );
+               _NodeAdded:= True;
+            end;
+            _Node.ChildNodes.Nodes[Cst_Players].Text:= Players;
+            _Game.Players:= Players;
+         end;
+
+         if aScrape then Developer:= Edt_ScrapeDeveloper.Text
+         else Developer:= Edt_Developer.Text;
+         if not ( _Game.Developer.Equals( Developer ) ) then begin
+            if not ( NodeExists( _Node, Cst_Developer ) ) then begin
+               _Node.AddChild( Cst_Developer );
+               _NodeAdded:= True;
+            end;
+            _Node.ChildNodes.Nodes[Cst_Developer].Text:= Developer;
+            _Game.Developer:= Developer;
+         end;
+
+         if aScrape then Date:= Edt_ScrapeDate.Text
+         else Date:= Edt_ReleaseDate.Text;
+         if not ( _Game.ReleaseDate.Equals( Date ) ) then begin
+            if not ( NodeExists( _Node, Cst_ReleaseDate ) ) then begin
+               _Node.AddChild( Cst_ReleaseDate );
+               _NodeAdded:= True;
+            end;
+            _Date:= FormatDateFromString( Date, True );
+            if not _Date.IsEmpty then
+               _Game.ReleaseDate:= Date
+            else begin
+               _Game.ReleaseDate:= '';
+               if aScrape then Edt_ScrapeDate.Text:= ''
+               else Edt_ReleaseDate.Text:= '';
+            end;
+            _Node.ChildNodes.Nodes[Cst_ReleaseDate].Text:= _Date;
+         end;
+
+         if aScrape then Publisher:= Edt_ScrapePublisher.Text
+         else Publisher:= Edt_Publisher.Text;
+         if not ( _Game.Publisher.Equals( Publisher ) ) then begin
+            if not ( NodeExists( _Node, Cst_Publisher ) ) then begin
+               _Node.AddChild( Cst_Publisher );
+               _NodeAdded:= True;
+            end;
+            _Node.ChildNodes.Nodes[Cst_Publisher].Text:= Publisher;
+            _Game.Publisher:= Publisher;
+         end;
+
+         if aScrape then Description:= Mmo_ScrapeDescription.Text
+         else Description:= Mmo_Description.Text;
+         if not ( _Game.Description.Equals( Description ) ) then begin
+            if not ( NodeExists( _Node, Cst_Description ) ) then begin
+               _Node.AddChild( Cst_Description );
+               _NodeAdded:= True;
+            end;
+            _Node.ChildNodes.Nodes[Cst_Description].Text:= Description;
+            _Game.Description:= Description;
+         end;
+
+         if aScrape then Region:= Edt_ScrapeRegion.Text
+         else Region:= Edt_Region.Text;
+         if not ( _Game.Region.Equals( Region ) ) then begin
+            if not ( NodeExists( _Node, Cst_Region ) ) then begin
+               _Node.AddChild( Cst_Region );
+               _NodeAdded:= True;
+            end;
+            _Node.ChildNodes.Nodes[Cst_Region].Text:= Region;
+            _Game.Region:= Region;
+         end;
+
+         if not aScrape then begin
+            if not ( _Game.Hidden = Cbx_Hidden.ItemIndex ) then begin
+               if not ( NodeExists( _Node, Cst_Hidden ) ) then begin
+                  _Node.AddChild( Cst_Hidden );
+                  _NodeAdded:= True;
+               end;
+               if ( Cbx_Hidden.ItemIndex = 0 ) then _Node.ChildNodes.Nodes[Cst_Hidden].Text:= Cst_False
+               else _Node.ChildNodes.Nodes[Cst_Hidden].Text:= Cst_True;
+               _Game.Hidden:= Cbx_Hidden.ItemIndex;
+            end;
+
+            if not ( _Game.Favorite = Cbx_Favorite.ItemIndex ) then begin
+               if not ( NodeExists( _Node, Cst_Favorite ) ) then begin
+                  _Node.AddChild( Cst_Favorite );
+                  _NodeAdded:= True;
+               end;
+               if ( Cbx_Favorite.ItemIndex = 0 ) then _Node.ChildNodes.Nodes[Cst_Favorite].Text:= Cst_False
+               else _Node.ChildNodes.Nodes[Cst_Favorite].Text:= Cst_True;
+               _Game.Favorite:= Cbx_Favorite.ItemIndex;
+            end;
          end;
       end;
-   end;
 
-   if ( aSavePic ) and ( Img_Scrape.Picture.Graphic <> nil ) then begin
-      Img_Scrape.Picture.SaveToFile( FRootPath + FCurrentFolder + FImageFolder +
-                                     '\' + FScrapedGame.RomNameWoExt + Cst_ImageSuffixPng );
+      if ( aSavePic ) and ( Img_Scrape.Picture.Graphic <> nil ) then begin
+         Img_Scrape.Picture.SaveToFile( FRootPath + FCurrentFolder + FImageFolder +
+                                        '\' + FScrapedGame.RomNameWoExt + Cst_ImageSuffixPng );
 
-      _ImageLink:= FXmlImageFolderPath + FScrapedGame.RomNameWoExt + Cst_ImageSuffixPng;
+         _ImageLink:= FXmlImageFolderPath + FScrapedGame.RomNameWoExt + Cst_ImageSuffixPng;
 
-      if not Assigned( _Node.ChildNodes.FindNode( Cst_ImageLink ) ) then begin
-         _Node.AddChild( Cst_ImageLink );
-         _NodeAdded:= True;
+         if not Assigned( _Node.ChildNodes.FindNode( Cst_ImageLink ) ) then begin
+            _Node.AddChild( Cst_ImageLink );
+            _NodeAdded:= True;
+         end;
+         _Node.ChildNodes.Nodes[Cst_ImageLink].Text:= _ImageLink;
+         _Game.ImagePath := _ImageLink;
+         _Game.PhysicalImagePath := GetPhysicalMediaPath(_ImageLink);
       end;
-      _Node.ChildNodes.Nodes[Cst_ImageLink].Text:= _ImageLink;
-   end;
 
-   //Et enfin on enregistre le fichier (en formatant correctement si on a ajouté un noeud)
-   if _NodeAdded then begin
-      Screen.Cursor:= crHourGlass;
-      XMLDoc.XML.Text:= Xml.Xmldoc.FormatXMLData( XMLDoc.XML.Text );
+      if ( aSaveVideo ) and ( FVideoScrapeLink <> '' ) then begin
+         VideoPath := FRootPath + FCurrentFolder + FVideoFolder +
+                           '\' + FScrapedGame.RomNameWoExt + Cst_VideoSuffixMp4;
+         SaveLinkToFile ( FVideoScrapeLink, VideoPath );
+
+         _VideoLink:= FXmlVideoFolderPath + FScrapedGame.RomNameWoExt + Cst_VideoSuffixMp4;
+
+         if not Assigned( _Node.ChildNodes.FindNode( Cst_VideoLink ) ) then begin
+            _Node.AddChild( Cst_VideoLink );
+            _NodeAdded:= True;
+         end;
+         _Node.ChildNodes.Nodes[Cst_VideoLink].Text:= _VideoLink;
+         _Game.VideoPath := _VideoLink;
+         _Game.PhysicalVideoPath := GetPhysicalMediaPath(_VideoLink);
+      end;
+
+      //Et enfin on enregistre le fichier (en formatant correctement si on a ajouté un noeud)
+      if _NodeAdded then begin
+         Screen.Cursor:= crHourGlass;
+         XMLDoc.XML.Text:= Xml.Xmldoc.FormatXMLData( XMLDoc.XML.Text );
+         Screen.Cursor:= crDefault;
+         XMLDoc.Active:= True;
+      end;
+      XMLDoc.SaveToFile( _GameListPath );
+      XMLDoc.Active:= False;
+
+      //on rafraichit la liste
+      LoadGamesList( getCurrentFolderName );
+
+      if ( Lbx_Games.Count > 0 ) then Lbx_Games.Selected[0]:= False;
+
+      //et on remet la sélection sur le bon item si possible
+      if ( Lbx_Games.Count = 0 ) then
+         Lbx_Games.ItemIndex:= -1
+      else if ( Lbx_Games.Count > 0 ) then begin
+         if _NameChanged then begin
+            if ( Lbx_Games.Items.IndexOf( _NewName ) >=0 ) then
+               Lbx_Games.ItemIndex:= Lbx_Games.Items.IndexOf( _NewName )
+            else
+            Lbx_Games.ItemIndex:= Pred( _Index );
+         end else if ( _Index >= Lbx_Games.Count ) then begin
+            Lbx_Games.ItemIndex:= Pred( Lbx_Games.Count );
+         end else
+         Lbx_Games.ItemIndex:= _Index;
+      end;
+
+      if aScrape then begin
+         Pgc_Editor.ActivePage:= Tbs_Main;
+         Tbs_ScrapeHide( nil );
+      end;
+
+      if ( Lbx_Games.Count > 0 ) then begin
+         Lbx_Games.Selected[Lbx_Games.ItemIndex]:= True;
+         LoadGame( ( Lbx_Games.Items.Objects[Lbx_Games.ItemIndex] as TGame ) );
+      end;
+
+   finally
       Screen.Cursor:= crDefault;
-      XMLDoc.Active:= True;
    end;
-   XMLDoc.SaveToFile( _GameListPath );
-   XMLDoc.Active:= False;
+end;
 
-   //on rafraichit la liste
-   LoadGamesList( getCurrentFolderName );
+procedure TFrm_Editor.SaveLinkToFile ( aLink, aPath: string );
+var
+   Stream: TBytesStream;
+begin
+   Stream:= TBytesStream.Create;
+   try
+      try
+         Net_HTTPClient.Get( aLink, Stream );
+         if ( Stream.Size = 0 ) then begin
+            WarnUser( Rst_StreamError );
+            Exit;
+         end;
+         Stream.Position:= 0;
+      except
+         WarnUser( Rst_ServerError8 );
+         Exit;
+      end;
 
-   if ( Lbx_Games.Count > 0 ) then Lbx_Games.Selected[0]:= False;
+      Stream.SaveToFile(aPath);
 
-   //et on remet la sélection sur le bon item si possible
-   if ( Lbx_Games.Count = 0 ) then
-      Lbx_Games.ItemIndex:= -1
-   else if ( Lbx_Games.Count > 0 ) then begin
-      if _NameChanged then begin
-         if ( Lbx_Games.Items.IndexOf( _NewName ) >=0 ) then
-            Lbx_Games.ItemIndex:= Lbx_Games.Items.IndexOf( _NewName )
-         else
-         Lbx_Games.ItemIndex:= Pred( _Index );
-      end else if ( _Index >= Lbx_Games.Count ) then begin
-         Lbx_Games.ItemIndex:= Pred( Lbx_Games.Count );
-      end else
-      Lbx_Games.ItemIndex:= _Index;
+   finally
+      Stream.Free;
    end;
-
-   if aScrape then begin
-      Pgc_Editor.ActivePage:= Tbs_Main;
-      Tbs_ScrapeHide( nil );
-   end;
-
-   if ( Lbx_Games.Count > 0 ) then begin
-      Lbx_Games.Selected[Lbx_Games.ItemIndex]:= True;
-      LoadGame( ( Lbx_Games.Items.Objects[Lbx_Games.ItemIndex] as TGame ) );
-   end;
-
-   Screen.Cursor:= crDefault;
 end;
 
 //Diverse sections du menu sélection
@@ -2865,6 +2920,8 @@ begin
       Net_HTTPClient.ProxySettings := TProxySettings.Create('', 0, '', '');
    end;
 
+   ClearScrapeMedia;
+
    //on désactive les items du mainmenu qui ne doivent pas être utilisés
    Mnu_Actions.Enabled:= False;
    Mnu_Theme.Enabled:= False;
@@ -2882,6 +2939,17 @@ begin
    //on réactive les items du mainmenu désactivés à l'entrée dans l'onglet
    Mnu_Actions.Enabled:= True;
    Mnu_Theme.Enabled:= True;
+end;
+
+procedure TFrm_Editor.ClearScrapeMedia;
+begin
+   // Clear the Save Picture and Save Video buttons until rescraping or
+   // clicking another picture
+   FVideoScrapeLink := '';
+   Chk_ScrapePicture.Checked := False;
+   Chk_ScrapePicture.Enabled := False;
+   Chk_ScrapeVideo.Checked := False;
+   Chk_ScrapeVideo.Enabled := False;
 end;
 
 //Requête GET pour récupérer le XML des infos du jeu.
@@ -3047,6 +3115,13 @@ begin
       if Assigned( Nodes ) and ( Nodes.Count > 0 ) then begin
          //Et on boucle pour trouver les noeuds qui nous intéressent
          for ii:= 0 to Pred( Nodes.Count ) do begin
+            // Video types enable the Save Video button and keep the link for later
+            if ( ( Nodes[ii].Attributes[Cst_AttType] = Cst_MediaVideo ) and
+                 ( Chk_Video.Checked ) ) then begin
+               FVideoScrapeLink:= Nodes[ii].Text;
+               Chk_ScrapeVideo.Checked:= true;
+               Chk_ScrapeVideo.Enabled:= true;
+            end;
             if ( ( Nodes[ii].Attributes[Cst_AttType] = Cst_MediaBox2d ) and
                  ( Chk_Box2D.Checked ) ) or
                ( ( Nodes[ii].Attributes[Cst_AttType] = Cst_MediaScreenShot ) and
@@ -3369,6 +3444,7 @@ procedure TFrm_Editor.Btn_ScrapeClick( Sender: TObject );
 begin
    //On nettoie les listes et champs pour commencer
    EmptyScrapeFields;
+   ClearScrapeMedia;
 
    //on désactive pour éviter les clicks intempestifs pendant le chargement
    Img_Loading.Visible:= True;
@@ -3389,13 +3465,13 @@ end;
 //au click sur bouton save changes scrape
 procedure TFrm_Editor.Btn_ScrapeSaveClick(Sender: TObject);
 begin
-   SaveChangesToGamelist( True, Chk_ScrapePicture.Checked, Chk_ScrapeInfos.Checked );
+   SaveChangesToGamelist( True, Chk_ScrapeVideo.Checked, Chk_ScrapePicture.Checked, Chk_ScrapeInfos.Checked );
 end;
 
 //au click sur les checkbox de l'onglet scrape (pour save les changements)
 procedure TFrm_Editor.Chk_ScrapeClick(Sender: TObject);
 begin
-   Btn_ScrapeSave.Enabled:= ( Chk_ScrapeInfos.Checked ) or ( Chk_ScrapePicture.Checked );
+   Btn_ScrapeSave.Enabled:= ( Chk_ScrapeInfos.Checked ) or ( Chk_ScrapePicture.Checked ) or ( Chk_ScrapeVideo.Checked );
 end;
 
 //au click sur le bouton convert all text to uppercase

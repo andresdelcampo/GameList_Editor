@@ -478,6 +478,7 @@ const
    Cst_MediaMix2 = 'mixrbv2';
    Cst_MediaArcadeBox1 = 'ssarcademyboxv1';
    Cst_MediaWheel = 'wheel';
+   Cst_MediaVideo = 'video';
 
    //tableau de liaison enum themes / noms themes
    Cst_ThemeNameStr: array[TThemeName] of string =
