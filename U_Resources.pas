@@ -440,6 +440,7 @@ const
    Cst_Category = 'jeuInfos.php';
    Cst_ScrapeLogin = '?devid=NeeeeB';
    Cst_ScrapePwd = '&devpassword=mapzoe';
+   Cst_ScrapePwdSafe = '&devpassword=';
    Cst_DevSoftName = '&softname=GameListEditorv1';
    Cst_Output = '&output=xml';
    Cst_SSId = '&ssid=';

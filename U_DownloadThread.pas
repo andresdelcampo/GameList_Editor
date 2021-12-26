@@ -77,19 +77,19 @@ begin
          Graph.LoadFromStream( Stream );
          Img.Picture.Graphic:= Graph;
       except
-         //gestion des erreurs de connexion
-
-         //   case E.ErrorCode of
-         //      400: Frm_Editor.WarnUser( Rst_ServerError1 );
-         //      401: Frm_Editor.WarnUser( Rst_ServerError2 );
-         //      403: Frm_Editor.WarnUser( Rst_ServerError3 );
-         //      404: Frm_Editor.WarnUser( Rst_ServerError4 );
-         //      423: Frm_Editor.WarnUser( Rst_ServerError5 );
-         //      426: Frm_Editor.WarnUser( Rst_ServerError6 );
-         //      429: Frm_Editor.WarnUser( Rst_ServerError7 );
-         //   end;
-         Frm_Editor.WarnUser( Rst_ServerError8 );
-         Exit;
+         on E : Exception do
+         begin
+            // Legacy errors
+            //   400: WarnUser( Rst_ServerError1 );
+            //   401: WarnUser( Rst_ServerError2 );
+            //   403: WarnUser( Rst_ServerError3 );
+            //   404: WarnUser( Rst_ServerError4 );
+            //   423: WarnUser( Rst_ServerError5 );
+            //   426: WarnUser( Rst_ServerError6 );
+            //   429: WarnUser( Rst_ServerError7 );
+            Frm_Editor.WarnUserWithSafeUrl( Rst_ServerError8, E.Message, Url);
+            Exit;
+         end;
       end;
    finally
       Stream.Free;

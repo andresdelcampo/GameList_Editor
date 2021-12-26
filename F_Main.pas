@@ -348,6 +348,7 @@ type
       FProxyUse: Boolean;
       FImgList: TObjectList<TImage>;
       procedure WarnUser( const aMessage: string );
+      procedure WarnUserWithSafeUrl( const aMessage, aMessage2, aUrl: string );
       function SetFocusedControl( Control: TWinControl ): Boolean; override;
 
    end;
@@ -1997,8 +1998,11 @@ begin
          end;
          Stream.Position:= 0;
       except
-         WarnUser( Rst_ServerError8 );
-         Exit;
+         on E : Exception do
+         begin
+            WarnUserWithSafeUrl( Rst_ServerError8, E.Message, aLink );
+            Exit;
+         end;
       end;
 
       Stream.SaveToFile(aPath);
@@ -2994,8 +2998,9 @@ begin
          XMLDoc.LoadFromStream( Stream );
          XMLDoc.SaveToFile( FTempXmlPath );
       except
-         //gestion des erreurs de connexion
-            //case E.HelpContext of
+         on E : Exception do
+         begin
+            // Legacy errors
             //   400: WarnUser( Rst_ServerError1 );
             //   401: WarnUser( Rst_ServerError2 );
             //   403: WarnUser( Rst_ServerError3 );
@@ -3003,9 +3008,9 @@ begin
             //   423: WarnUser( Rst_ServerError5 );
             //   426: WarnUser( Rst_ServerError6 );
             //   429: WarnUser( Rst_ServerError7 );
-            //end;
-         WarnUser( Rst_ServerError8 );
-         Exit;
+            WarnUserWithSafeUrl( Rst_ServerError8, E.Message, Query );
+            Exit;
+         end;
       end;
    finally
       Stream.Free;
@@ -3428,6 +3433,21 @@ procedure TFrm_Editor.WarnUser( const aMessage: string );
 begin
    Screen.Cursor:= crDefault;
    ShowMessage( aMessage );
+end;
+
+procedure TFrm_Editor.WarnUserWithSafeUrl( const aMessage, aMessage2, aUrl: string );
+var
+   aSafeUrl : string;
+begin
+   // Fix & that otherwise would not show, and remove password
+   aSafeUrl :=  aUrl.Replace('&','&&').Replace(Cst_ScrapePwd, Cst_ScrapePwdSafe);
+
+   // If the URL is too long, split in two lines
+   if aSafeUrl.Length > 160 then aSafeUrl.Insert(120, sLineBreak);
+
+   WarnUser( aMessage + sLineBreak +
+             aMessage2 + sLineBreak + sLineBreak +
+             aSafeUrl);
 end;
 
 //Pour récupérer la taille du fichier du jeu
