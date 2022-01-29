@@ -2315,7 +2315,7 @@ object Frm_Editor: TFrm_Editor
           Height = 113
           Enabled = False
           ScrollBars = ssVertical
-          TabOrder = 20
+          TabOrder = 23
           OnChange = FieldChange
           OnKeyPress = Mmo_DescriptionKeyPress
         end
@@ -2326,7 +2326,7 @@ object Frm_Editor: TFrm_Editor
           Height = 21
           Enabled = False
           NumbersOnly = True
-          TabOrder = 14
+          TabOrder = 17
           OnChange = FieldChange
         end
         object Edt_ReleaseDate: TEdit
@@ -2340,7 +2340,7 @@ object Frm_Editor: TFrm_Editor
           Enabled = False
           ParentShowHint = False
           ShowHint = True
-          TabOrder = 12
+          TabOrder = 15
           OnChange = FieldChange
         end
         object Edt_Developer: TEdit
@@ -2349,7 +2349,7 @@ object Frm_Editor: TFrm_Editor
           Width = 185
           Height = 21
           Enabled = False
-          TabOrder = 18
+          TabOrder = 21
           OnChange = FieldChange
         end
         object Edt_Publisher: TEdit
@@ -2358,7 +2358,7 @@ object Frm_Editor: TFrm_Editor
           Width = 185
           Height = 21
           Enabled = False
-          TabOrder = 17
+          TabOrder = 20
           OnChange = FieldChange
         end
         object Edt_Genre: TEdit
@@ -2367,7 +2367,7 @@ object Frm_Editor: TFrm_Editor
           Width = 185
           Height = 21
           Enabled = False
-          TabOrder = 19
+          TabOrder = 22
           OnChange = FieldChange
         end
         object Edt_NbPlayers: TEdit
@@ -2376,7 +2376,7 @@ object Frm_Editor: TFrm_Editor
           Width = 108
           Height = 21
           Enabled = False
-          TabOrder = 13
+          TabOrder = 16
           OnChange = FieldChange
         end
         object Edt_Name: TEdit
@@ -2385,7 +2385,7 @@ object Frm_Editor: TFrm_Editor
           Width = 417
           Height = 21
           Enabled = False
-          TabOrder = 10
+          TabOrder = 13
           OnChange = FieldChange
         end
         object Btn_SaveChanges: TButton
@@ -2395,7 +2395,7 @@ object Frm_Editor: TFrm_Editor
           Height = 25
           Caption = 'Save Changes for this game'
           Enabled = False
-          TabOrder = 22
+          TabOrder = 25
           OnClick = Btn_SaveChangesClick
         end
         object Btn_ChangeImage: TButton
@@ -2415,7 +2415,7 @@ object Frm_Editor: TFrm_Editor
           Height = 25
           Caption = 'Change Picture to default'
           Enabled = False
-          TabOrder = 8
+          TabOrder = 10
           OnClick = Btn_SetDefaultPictureClick
         end
         object Btn_ChangeAll: TButton
@@ -2425,7 +2425,7 @@ object Frm_Editor: TFrm_Editor
           Height = 25
           Caption = 'Change all missing pictures to default'
           Enabled = False
-          TabOrder = 9
+          TabOrder = 11
           OnClick = Btn_ChangeAllClick
         end
         object Cbx_Filter: TComboBox
@@ -2460,7 +2460,7 @@ object Frm_Editor: TFrm_Editor
           Width = 185
           Height = 21
           Enabled = False
-          TabOrder = 11
+          TabOrder = 14
           OnChange = FieldChange
         end
         object Btn_MoreInfos: TButton
@@ -2470,7 +2470,7 @@ object Frm_Editor: TFrm_Editor
           Height = 25
           Caption = 'More infos...'
           Enabled = False
-          TabOrder = 21
+          TabOrder = 24
           OnClick = Btn_MoreInfosClick
         end
         object Btn_Delete: TButton
@@ -2490,7 +2490,7 @@ object Frm_Editor: TFrm_Editor
           ImageMargins.Right = -10
           Images = Img_List
           ParentFont = False
-          TabOrder = 23
+          TabOrder = 26
           OnClick = Btn_DeleteClick
         end
         object ProgressBar: TProgressBar
@@ -2500,7 +2500,7 @@ object Frm_Editor: TFrm_Editor
           Height = 17
           MarqueeInterval = 1
           BarColor = clRed
-          TabOrder = 24
+          TabOrder = 27
           Visible = False
         end
         object Btn_RemovePicture: TButton
@@ -2510,7 +2510,7 @@ object Frm_Editor: TFrm_Editor
           Height = 25
           Caption = 'Delete Picture'
           Enabled = False
-          TabOrder = 7
+          TabOrder = 8
           OnClick = Btn_RemovePictureClick
         end
         object Cbx_Hidden: TComboBox
@@ -2520,7 +2520,7 @@ object Frm_Editor: TFrm_Editor
           Height = 21
           Style = csDropDownList
           Enabled = False
-          TabOrder = 15
+          TabOrder = 18
           OnChange = FieldChange
           Items.Strings = (
             'No'
@@ -2533,7 +2533,7 @@ object Frm_Editor: TFrm_Editor
           Height = 21
           Style = csDropDownList
           Enabled = False
-          TabOrder = 16
+          TabOrder = 19
           OnChange = FieldChange
           Items.Strings = (
             'No'
@@ -2546,7 +2546,7 @@ object Frm_Editor: TFrm_Editor
           Height = 21
           Enabled = False
           ReadOnly = True
-          TabOrder = 25
+          TabOrder = 28
         end
         object Edt_Search: TEdit
           Left = 29
@@ -2582,7 +2582,7 @@ object Frm_Editor: TFrm_Editor
           OnClick = Chk_FullRomNameClick
         end
         object Pgc_Media: TPageControl
-          Left = 829
+          Left = 832
           Top = 0
           Width = 378
           Height = 358
@@ -2598,7 +2598,7 @@ object Frm_Editor: TFrm_Editor
           Font.Style = []
           MultiLine = True
           ParentFont = False
-          TabOrder = 26
+          TabOrder = 12
           TabPosition = tpLeft
           OnChange = Pgc_MediaChange
           object Tbs_Picture: TTabSheet
@@ -11223,7 +11223,7 @@ object Frm_Editor: TFrm_Editor
           Height = 25
           Caption = 'Change Video'
           Enabled = False
-          TabOrder = 27
+          TabOrder = 7
           OnClick = Btn_ChangeVideoClick
         end
         object Btn_RemoveVideo: TButton
@@ -11233,7 +11233,7 @@ object Frm_Editor: TFrm_Editor
           Height = 25
           Caption = 'Delete Video'
           Enabled = False
-          TabOrder = 28
+          TabOrder = 9
           OnClick = Btn_RemoveVideoClick
         end
       end
