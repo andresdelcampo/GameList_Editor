@@ -1584,6 +1584,7 @@ var
    _Game: TGame;
    _GameListPath: string;
    _Node: IXMLNode;
+   _ImageReused: Boolean;
 begin
    //on commence par récupérer l'objet TGame correspondant
    _Game:= ( Lbx_Games.Items.Objects[Lbx_Games.ItemIndex] as TGame );
@@ -1593,6 +1594,15 @@ begin
 
    //On ouvre le fichier xml
    XMLDoc.LoadFromFile( _GameListPath );
+
+   // Find out if the image is used anywhere else other than in this game
+   _ImageReused := false;
+   _Node := XMLDoc.DocumentElement.ChildNodes.FindNode( Cst_Game );
+   repeat
+      if not ( _Node.ChildNodes.Nodes[Cst_Path].Text = _Game.RomPath ) then
+         if ( _Node.ChildNodes.FindNode(Cst_ImageLink).Text = _Game.ImagePath ) then _ImageReused := true;
+      _Node := _Node.NextSibling;
+   until not Assigned( _Node ) or _ImageReused;
 
    //On récupère le premier noeud "game"
    _Node := XMLDoc.DocumentElement.ChildNodes.FindNode( Cst_Game );
@@ -1610,7 +1620,8 @@ begin
    XMLDoc.Active:= False;
 
    //On supprime l'image du jeu
-   DeleteFile( _Game.PhysicalImagePath );
+   if not _ImageReused then
+      DeleteFile( _Game.PhysicalImagePath );
 
    //on vide l'image jeu
    Img_Game.Picture.Graphic:= nil;
@@ -1628,6 +1639,7 @@ var
    _Game: TGame;
    _GameListPath: string;
    _Node: IXMLNode;
+   _VideoReused: Boolean;
 begin
    Screen.Cursor:= crHourGlass;
 
@@ -1639,6 +1651,15 @@ begin
 
    // We open the xml file
    XMLDoc.LoadFromFile( _GameListPath );
+
+   // Find out if the video is used anywhere else other than in this game
+   _VideoReused := false;
+   _Node := XMLDoc.DocumentElement.ChildNodes.FindNode( Cst_Game );
+   repeat
+      if not ( _Node.ChildNodes.Nodes[Cst_Path].Text = _Game.RomPath ) then
+         if ( _Node.ChildNodes.FindNode(Cst_VideoLink).Text = _Game.VideoPath ) then _VideoReused := true;
+      _Node := _Node.NextSibling;
+   until not Assigned( _Node ) or _VideoReused;
 
    // Get the first "game" node
    _Node := XMLDoc.DocumentElement.ChildNodes.FindNode( Cst_Game );
@@ -1658,7 +1679,8 @@ begin
    StopGameVideo();
 
    // Remove physical file
-   DeleteFile( _Game.PhysicalVideoPath );
+   if not _VideoReused then
+      DeleteFile( _Game.PhysicalVideoPath );
 
    // Update the TGame object
    _Game.VideoPath:= '';
@@ -2170,6 +2192,8 @@ var
    _Node: IXMLNode;
    _GameListPath: string;
    _List: TObjectList<TGame>;
+   _ImageReused: Boolean;
+   _VideoReused: Boolean;
 begin
    //on construit le chemin vers le gamelist.xml
    _GameListPath:= FRootPath + FCurrentFolder + Cst_GameListFileName;
@@ -2179,6 +2203,18 @@ begin
 
     //On ouvre le fichier xml
     XMLDoc.LoadFromFile( _GameListPath );
+
+   // Find out if the image or video are used anywhere else other than in this game
+   _ImageReused := false;
+   _VideoReused := false;
+   _Node := XMLDoc.DocumentElement.ChildNodes.FindNode( Cst_Game );
+   repeat
+      if not ( _Node.ChildNodes.Nodes[Cst_Path].Text = aGame.RomPath ) then begin
+         if ( _Node.ChildNodes.FindNode(Cst_ImageLink).Text = aGame.ImagePath ) then _ImageReused := true;
+         if ( _Node.ChildNodes.FindNode(Cst_VideoLink).Text = aGame.VideoPath ) then _VideoReused := true;
+      end;
+      _Node := _Node.NextSibling;
+   until not Assigned( _Node );
 
     //On récupère le premier noeud "game"
     _Node := XMLDoc.DocumentElement.ChildNodes.FindNode( Cst_Game );
@@ -2196,10 +2232,12 @@ begin
     XMLDoc.Active:= False;
 
     //On supprime l'image du jeu
-    DeleteFile( aGame.PhysicalImagePath );
+    if not _ImageReused then
+       DeleteFile( aGame.PhysicalImagePath );
 
     // Delete video
-    DeleteFile( aGame.PhysicalVideoPath );
+    if not _VideoReused then
+       DeleteFile( aGame.PhysicalVideoPath );
 
     //suppression du jeu physiquement (action spéciale pour PSX)
     if ( getSystemKind = skPS ) then begin
