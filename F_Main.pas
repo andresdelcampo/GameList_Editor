@@ -2210,8 +2210,12 @@ begin
    _Node := XMLDoc.DocumentElement.ChildNodes.FindNode( Cst_Game );
    repeat
       if not ( _Node.ChildNodes.Nodes[Cst_Path].Text = aGame.RomPath ) then begin
-         if ( _Node.ChildNodes.FindNode(Cst_ImageLink).Text = aGame.ImagePath ) then _ImageReused := true;
-         if ( _Node.ChildNodes.FindNode(Cst_VideoLink).Text = aGame.VideoPath ) then _VideoReused := true;
+         if ( Assigned ( _Node.ChildNodes.FindNode(Cst_ImageLink) ) and
+              (_Node.ChildNodes.FindNode(Cst_ImageLink).Text = aGame.ImagePath) )
+              then _ImageReused := true;
+         if ( Assigned ( _Node.ChildNodes.FindNode(Cst_VideoLink) ) and
+              (_Node.ChildNodes.FindNode(Cst_VideoLink).Text = aGame.VideoPath) )
+              then _VideoReused := true;
       end;
       _Node := _Node.NextSibling;
    until not Assigned( _Node );
