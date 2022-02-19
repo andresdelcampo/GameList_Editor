@@ -385,9 +385,9 @@ const
    Cst_DateShortFill = '00';
    Cst_DateLongFill = '0000';
    Cst_DateSuffix = 'T000000';
-   Cst_ImageSuffixPng = '-image.png';
-   Cst_ImageSuffixJpg = '-image.jpg';
-   Cst_ImageSuffixJpeg = '-image.jpeg';
+   Cst_ImageSuffixPng = '.png';
+   Cst_ImageSuffixJpg = '.jpg';
+   Cst_ImageSuffixJpeg = '.jpeg';
    Cst_VideoSuffixMp4 = '.mp4';
    Cst_DefaultPicsFolderPath = 'Resources\DefaultPictures\';
    Cst_DefaultImageNameSuffix = '-default.png';
