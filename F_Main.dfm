@@ -16186,7 +16186,7 @@ object Frm_Editor: TFrm_Editor
           Height = 325
           Align = alTop
           BevelOuter = bvNone
-          TabOrder = 26
+          TabOrder = 28
           object Scl_Pictures: TScrollBox
             Left = 27
             Top = 0
@@ -17497,7 +17497,7 @@ object Frm_Editor: TFrm_Editor
           Height = 25
           Caption = 'Scrape'
           Enabled = False
-          TabOrder = 18
+          TabOrder = 19
           OnClick = Btn_ScrapeClick
         end
         object Mmo_ScrapeDescription: TMemo
@@ -17507,7 +17507,7 @@ object Frm_Editor: TFrm_Editor
           Height = 113
           Enabled = False
           ScrollBars = ssVertical
-          TabOrder = 16
+          TabOrder = 17
           OnKeyPress = Mmo_DescriptionKeyPress
         end
         object Edt_ScrapeGenre: TEdit
@@ -17516,7 +17516,7 @@ object Frm_Editor: TFrm_Editor
           Width = 185
           Height = 21
           Enabled = False
-          TabOrder = 13
+          TabOrder = 14
         end
         object Edt_ScrapeDeveloper: TEdit
           Left = 241
@@ -17524,7 +17524,7 @@ object Frm_Editor: TFrm_Editor
           Width = 185
           Height = 21
           Enabled = False
-          TabOrder = 11
+          TabOrder = 12
         end
         object Edt_ScrapePublisher: TEdit
           Left = 27
@@ -17532,7 +17532,7 @@ object Frm_Editor: TFrm_Editor
           Width = 185
           Height = 21
           Enabled = False
-          TabOrder = 10
+          TabOrder = 11
         end
         object Edt_ScrapeRating: TEdit
           Left = 457
@@ -17540,7 +17540,7 @@ object Frm_Editor: TFrm_Editor
           Width = 108
           Height = 21
           Enabled = False
-          TabOrder = 12
+          TabOrder = 13
         end
         object Edt_ScrapePlayers: TEdit
           Left = 457
@@ -17548,7 +17548,7 @@ object Frm_Editor: TFrm_Editor
           Width = 108
           Height = 21
           Enabled = False
-          TabOrder = 15
+          TabOrder = 16
         end
         object Edt_ScrapeDate: TEdit
           Left = 457
@@ -17561,7 +17561,7 @@ object Frm_Editor: TFrm_Editor
           Enabled = False
           ParentShowHint = False
           ShowHint = True
-          TabOrder = 9
+          TabOrder = 10
         end
         object Edt_ScrapeRegion: TEdit
           Left = 241
@@ -17569,7 +17569,7 @@ object Frm_Editor: TFrm_Editor
           Width = 185
           Height = 21
           Enabled = False
-          TabOrder = 14
+          TabOrder = 15
         end
         object Edt_ScrapeName: TEdit
           Left = 27
@@ -17577,7 +17577,7 @@ object Frm_Editor: TFrm_Editor
           Width = 399
           Height = 21
           Enabled = False
-          TabOrder = 8
+          TabOrder = 9
         end
         object Btn_ScrapeSave: TButton
           Left = 976
@@ -17586,7 +17586,7 @@ object Frm_Editor: TFrm_Editor
           Height = 25
           Caption = 'Save Changes for this game'
           Enabled = False
-          TabOrder = 23
+          TabOrder = 24
           OnClick = Btn_ScrapeSaveClick
         end
         object Edt_ScrapeRomPath: TEdit
@@ -17595,7 +17595,7 @@ object Frm_Editor: TFrm_Editor
           Width = 537
           Height = 21
           ReadOnly = True
-          TabOrder = 17
+          TabOrder = 18
         end
         object Btn_ScrapeLower: TButton
           Left = 976
@@ -17604,7 +17604,7 @@ object Frm_Editor: TFrm_Editor
           Height = 25
           Caption = 'Convert all text to lowercase'
           Enabled = False
-          TabOrder = 22
+          TabOrder = 23
           OnClick = Btn_ScrapeLowerClick
         end
         object Btn_ScrapeUpper: TButton
@@ -17614,7 +17614,7 @@ object Frm_Editor: TFrm_Editor
           Height = 25
           Caption = 'Convert all text to uppercase'
           Enabled = False
-          TabOrder = 21
+          TabOrder = 22
           OnClick = Btn_ScrapeUpperClick
         end
         object Chk_ScrapePicture: TCheckBox
@@ -17624,7 +17624,7 @@ object Frm_Editor: TFrm_Editor
           Height = 17
           Caption = 'Save picture'
           Enabled = False
-          TabOrder = 24
+          TabOrder = 26
           OnClick = Chk_ScrapeClick
         end
         object Chk_ScrapeInfos: TCheckBox
@@ -17636,7 +17636,7 @@ object Frm_Editor: TFrm_Editor
           Checked = True
           Enabled = False
           State = cbChecked
-          TabOrder = 25
+          TabOrder = 27
           OnClick = Chk_ScrapeClick
         end
         object Chk_ManualCRC: TCheckBox
@@ -17646,7 +17646,7 @@ object Frm_Editor: TFrm_Editor
           Height = 17
           Caption = 'Enter CRC32 manually'
           Enabled = False
-          TabOrder = 19
+          TabOrder = 20
           OnClick = Chk_ManualCRCClick
         end
         object Edt_ManualCRC: TEdit
@@ -17655,7 +17655,7 @@ object Frm_Editor: TFrm_Editor
           Width = 209
           Height = 21
           Enabled = False
-          TabOrder = 20
+          TabOrder = 21
         end
         object Chk_Box2D: TCheckBox
           Left = 27
@@ -17744,7 +17744,7 @@ object Frm_Editor: TFrm_Editor
           Height = 17
           Caption = 'Save video'
           Enabled = False
-          TabOrder = 27
+          TabOrder = 25
           OnClick = Chk_ScrapeClick
         end
         object Chk_Video: TCheckBox
@@ -17755,7 +17755,7 @@ object Frm_Editor: TFrm_Editor
           Caption = 'Video'
           Checked = True
           State = cbChecked
-          TabOrder = 28
+          TabOrder = 8
         end
       end
     end
