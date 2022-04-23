@@ -260,8 +260,6 @@ type
       FCurrentFolder: string;
       FImageFolder: string;
       FVideoFolder: string;
-      FXmlImageFolderPath: string;
-      FXmlVideoFolderPath: string;
       FVideoScrapeLink: string;
       FIsLoading: Boolean;
       FGodMode, FAutoHash, FDelWoPrompt, FGenesisLogo,
@@ -1014,22 +1012,16 @@ procedure TFrm_Editor.LoadGamesList( const aSystem: string );
    var
       StartPos, EndPos: Integer;
    begin
-      StartPos:= Succ( Pos( '/', aGame.ImagePath ) );
       EndPos:= LastDelimiter( '/', aGame.ImagePath );
-      FImageFolder:= Copy( aGame.ImagePath, StartPos, ( EndPos - StartPos ) );
-
-      FXmlImageFolderPath:= Copy( aGame.ImagePath, 1, EndPos );
+      FImageFolder:= Copy( aGame.ImagePath, 1, EndPos );
    end;
 
    procedure GetVideoFolder( aGame: TGame );
    var
       StartPos, EndPos: Integer;
    begin
-      StartPos:= Succ( Pos( '/', aGame.VideoPath ) );
       EndPos:= LastDelimiter( '/', aGame.VideoPath );
-      FVideoFolder:= Copy( aGame.VideoPath, StartPos, ( EndPos - StartPos ) );
-
-      FXmlVideoFolderPath:= Copy( aGame.VideoPath, 1, EndPos );
+      FVideoFolder:= Copy( aGame.VideoPath, 1, EndPos );
    end;
 
    //Permet de vérifier si l'image existe "physiquement"
@@ -1482,7 +1474,7 @@ begin
    until not Assigned( _Node );
 
    //on écrit le chemin vers l'image
-   _ImageLink:= FXmlImageFolderPath + aGame.RomNameWoExt + Cst_ImageSuffixPng;
+   _ImageLink:= FImageFolder + aGame.RomNameWoExt + Cst_ImageSuffixPng;
 
    if not Assigned( _Node.ChildNodes.FindNode( Cst_ImageLink ) ) then begin
       _Node.AddChild( Cst_ImageLink );
@@ -1540,7 +1532,7 @@ begin
    until not Assigned( _Node );
 
    // We write the path to the video
-   _VideoLink:= FXmlVideoFolderPath + aGame.RomNameWoExt + Cst_VideoSuffixMp4;
+   _VideoLink:= FVideoFolder + aGame.RomNameWoExt + Cst_VideoSuffixMp4;
 
    if not Assigned( _Node.ChildNodes.FindNode( Cst_VideoLink ) ) then begin
       _Node.AddChild( Cst_VideoLink );
@@ -1934,7 +1926,7 @@ begin
          Img_Scrape.Picture.SaveToFile( FRootPath + FCurrentFolder + FImageFolder +
                                         '\' + FScrapedGame.RomNameWoExt + Cst_ImageSuffixPng );
 
-         _ImageLink:= FXmlImageFolderPath + FScrapedGame.RomNameWoExt + Cst_ImageSuffixPng;
+         _ImageLink:= FImageFolder + FScrapedGame.RomNameWoExt + Cst_ImageSuffixPng;
 
          if not Assigned( _Node.ChildNodes.FindNode( Cst_ImageLink ) ) then begin
             _Node.AddChild( Cst_ImageLink );
@@ -1950,7 +1942,7 @@ begin
                            '\' + FScrapedGame.RomNameWoExt + Cst_VideoSuffixMp4;
          SaveLinkToFile ( FVideoScrapeLink, VideoPath );
 
-         _VideoLink:= FXmlVideoFolderPath + FScrapedGame.RomNameWoExt + Cst_VideoSuffixMp4;
+         _VideoLink:= FVideoFolder + FScrapedGame.RomNameWoExt + Cst_VideoSuffixMp4;
 
          if not Assigned( _Node.ChildNodes.FindNode( Cst_VideoLink ) ) then begin
             _Node.AddChild( Cst_VideoLink );
