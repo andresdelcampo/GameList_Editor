@@ -371,8 +371,7 @@ function TFrm_Editor.GetPhysicalRomPath( const aRomPath: string ): string;
 var
    _Pos: Integer;
 begin
-   _Pos:= Pos( '/', aRomPath );
-   Result:= FRootPath + FCurrentFolder + Copy( aRomPath, Succ( _Pos ), ( aRomPath.Length - _Pos ) );
+   Result:= FRootPath + FCurrentFolder + aRomPath;
    Result:= StringReplace( Result, '/', '\', [rfReplaceAll] );
 end;
 
@@ -382,8 +381,7 @@ var
 begin
    if aPath.IsEmpty then Result:= ''
    else begin
-      _Pos:= Pos( '/', aPath );
-      Result:= FRootPath + FCurrentFolder + Copy( aPath, Succ( _Pos ), ( aPath.Length - _Pos ) );
+      Result:= FRootPath + FCurrentFolder + aPath;
       Result:= StringReplace( Result, '/', '\', [rfReplaceAll] );
    end;
 end;
