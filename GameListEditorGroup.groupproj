@@ -1,0 +1,48 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{3EAACEF8-1132-447A-83B6-879C966ED2A9}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="GameListEditor.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="pkg_windowsmediaplayer.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="GameListEditor">
+        <MSBuild Projects="GameListEditor.dproj"/>
+    </Target>
+    <Target Name="GameListEditor:Clean">
+        <MSBuild Projects="GameListEditor.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="GameListEditor:Make">
+        <MSBuild Projects="GameListEditor.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="pkg_windowsmediaplayer">
+        <MSBuild Projects="pkg_windowsmediaplayer.dproj"/>
+    </Target>
+    <Target Name="pkg_windowsmediaplayer:Clean">
+        <MSBuild Projects="pkg_windowsmediaplayer.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="pkg_windowsmediaplayer:Make">
+        <MSBuild Projects="pkg_windowsmediaplayer.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="GameListEditor;pkg_windowsmediaplayer"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="GameListEditor:Clean;pkg_windowsmediaplayer:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="GameListEditor:Make;pkg_windowsmediaplayer:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>

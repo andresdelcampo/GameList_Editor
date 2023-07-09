@@ -87,7 +87,7 @@ resourcestring
               'from a Recalbox or Retropie installation:' + sLineBreak +
               'https://www.recalbox.com/' + sLineBreak +
               'https://retropie.org.uk/' + sLineBreak + sLineBreak +
-              'It is written in Delphi 10.4 by NeeeeB and andresdelcampo' + sLineBreak +
+              'It is written in Delphi 11.3 by NeeeeB and andresdelcampo' + sLineBreak +
               'Its source code is fully available at:' + sLineBreak +
               'https://github.com/andresdelcampo/GameList_Editor' + sLineBreak + sLineBreak +
               'Your Gamelist.xml should have been created' + sLineBreak +
