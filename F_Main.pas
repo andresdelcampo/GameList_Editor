@@ -284,6 +284,7 @@ type
       procedure LoadGamesList( const aSystem: string );
       procedure LoadGame( aGame: TGame );
       procedure ClearAllFields;
+      procedure SaveBatchChangesToGamelist;
       procedure SaveChangesToGamelist( aScrape, aSaveVideo, aSavePic, aSaveInfos: Boolean );
       procedure EnableControls( aValue: Boolean );
       procedure EnableComponents( aValue: Boolean );
@@ -991,18 +992,33 @@ var
 begin
    if FIsLoading then Exit;
 
-   _Game:= ( Lbx_Games.Items.Objects[Lbx_Games.ItemIndex] as TGame );
-   Btn_SaveChanges.Enabled:= not ( _Game.Name.Equals( Edt_Name.Text ) ) or
-                             not ( _Game.Genre.Equals( Edt_Genre.Text ) ) or
-                             not ( _Game.Rating.Equals( Edt_Rating.Text ) ) or
-                             not ( _Game.Players.Equals( Edt_NbPlayers.Text ) ) or
-                             not ( _Game.Developer.Equals( Edt_Developer.Text ) ) or
-                             not ( _Game.Publisher.Equals( Edt_Publisher.Text ) ) or
-                             not ( _Game.ReleaseDate.Equals( Edt_ReleaseDate.Text ) ) or
-                             not ( _Game.Description.Equals( Mmo_Description.Text ) ) or
-                             not ( _Game.Region.Equals( Edt_Region.Text ) ) or
-                             not ( _Game.Hidden = Cbx_Hidden.ItemIndex ) or
-                             not ( _Game.Favorite = Cbx_Favorite.ItemIndex );
+   if Lbx_Games.SelCount > 1 then
+     Btn_SaveChanges.Enabled:= not ( Edt_Name.Text = '' ) or
+                               not ( Edt_Genre.Text = '' ) or
+                               not ( Edt_Rating.Text = '' ) or
+                               not ( Edt_NbPlayers.Text = '' ) or
+                               not ( Edt_Developer.Text = '' ) or
+                               not ( Edt_Publisher.Text = '' ) or
+                               not ( Edt_ReleaseDate.Text = '' ) or
+                               not ( Mmo_Description.Text = '' ) or
+                               not ( Edt_Region.Text = '' ) or
+                               not ( Cbx_Hidden.ItemIndex = -1 ) or
+                               not ( Cbx_Favorite.ItemIndex = -1 )
+   else begin
+     _Game:= ( Lbx_Games.Items.Objects[Lbx_Games.ItemIndex] as TGame );
+     Btn_SaveChanges.Enabled:= not ( _Game.Name.Equals( Edt_Name.Text ) ) or
+                               not ( _Game.Genre.Equals( Edt_Genre.Text ) ) or
+                               not ( _Game.Rating.Equals( Edt_Rating.Text ) ) or
+                               not ( _Game.Players.Equals( Edt_NbPlayers.Text ) ) or
+                               not ( _Game.Developer.Equals( Edt_Developer.Text ) ) or
+                               not ( _Game.Publisher.Equals( Edt_Publisher.Text ) ) or
+                               not ( _Game.ReleaseDate.Equals( Edt_ReleaseDate.Text ) ) or
+                               not ( _Game.Description.Equals( Mmo_Description.Text ) ) or
+                               not ( _Game.Region.Equals( Edt_Region.Text ) ) or
+                               not ( _Game.Hidden = Cbx_Hidden.ItemIndex ) or
+                               not ( _Game.Favorite = Cbx_Favorite.ItemIndex );
+   end;
+                                   
 end;
 
 //Chargement de la liste des jeux d'un système dans le listbox des jeux
@@ -1174,33 +1190,33 @@ end;
 procedure TFrm_Editor.EnableComponents( aValue: Boolean );
 begin
    Edt_Name.Enabled:= aValue;
-   Edt_Genre.Enabled:= aValue;
-   Edt_Rating.Enabled:= aValue;
-   Edt_Region.Enabled:= aValue;
-   Edt_Developer.Enabled:= aValue;
-   Edt_Publisher.Enabled:= aValue;
-   Edt_NbPlayers.Enabled:= aValue;
-   Edt_ReleaseDate.Enabled:= aValue;
+   Edt_Genre.Enabled:= True;
+   Edt_Rating.Enabled:= True;
+   Edt_Region.Enabled:= True;
+   Edt_Developer.Enabled:= True;
+   Edt_Publisher.Enabled:= True;
+   Edt_NbPlayers.Enabled:= True;
+   Edt_ReleaseDate.Enabled:= True;
    Edt_RomPath.Enabled:= aValue;
 
-   Mmo_Description.Enabled:= aValue;
+   Mmo_Description.Enabled:= True;
 
-   Cbx_Hidden.Enabled:= aValue;
-   Cbx_Favorite.Enabled:= aValue;
+   Cbx_Hidden.Enabled:= True;
+   Cbx_Favorite.Enabled:= True;
    Chk_ListByRom.Enabled:= aValue;
 
    Lbl_Name.Enabled:= aValue;
-   Lbl_Date.Enabled:= aValue;
-   Lbl_Genre.Enabled:= aValue;
-   Lbl_Region.Enabled:= aValue;
-   Lbl_Players.Enabled:= aValue;
-   Lbl_Rating.Enabled:= aValue;
-   Lbl_Hidden.Enabled:= aValue;
-   Lbl_Favorite.Enabled:= aValue;
-   Lbl_Description.Enabled:= aValue;
-   Lbl_Publisher.Enabled:= aValue;
+   Lbl_Date.Enabled:= True;
+   Lbl_Genre.Enabled:= True;
+   Lbl_Region.Enabled:= True;
+   Lbl_Players.Enabled:= True;
+   Lbl_Rating.Enabled:= True;
+   Lbl_Hidden.Enabled:= True;
+   Lbl_Favorite.Enabled:= True;
+   Lbl_Description.Enabled:= True;
+   Lbl_Publisher.Enabled:= True;
 
-   Lbl_Developer.Enabled:= aValue;
+   Lbl_Developer.Enabled:= True;
    Btn_MoreInfos.Enabled:= aValue;
    Btn_Delete.Enabled:= aValue;
    Btn_Scrape.Enabled:= aValue;
@@ -1717,7 +1733,11 @@ end;
 //Action au click sur bouton "save changes"
 procedure TFrm_Editor.Btn_SaveChangesClick( Sender: TObject );
 begin
-   SaveChangesToGamelist( False, False, False, True );
+   if Lbx_Games.SelCount > 1 then
+      SaveBatchChangesToGamelist()
+   else
+      SaveChangesToGamelist( False, False, False, True );
+      
    Btn_SaveChanges.Enabled:= False;
 //   Lbx_Games.SetFocus;
    if Assigned( FPrevWinControl ) then
@@ -1745,6 +1765,209 @@ begin
    FPictureLinks.Clear;
    FImgList.Clear;
 end;
+
+
+procedure TFrm_Editor.SaveBatchChangesToGamelist();
+
+   //Permet de s'assurer q'un noeud existe
+   function NodeExists( aNode: IXMLNode; const aNodeName: string ): Boolean;
+   begin
+      Result:= False;
+      if Assigned( aNode.ChildNodes.FindNode( aNodeName ) ) then
+         Result:= True;
+   end;
+
+var
+   _Node: IXMLNode;
+   _Game: TGame;
+   _GameListPath, _Date, _NewName, _ImageLink, _VideoLink,
+   Region, Rating, Developer, Players,
+   Description, Publisher, Date, Genre: string;
+   _NodeAdded: Boolean;
+   _Index, ii, Hidden, Favorite: Integer;
+begin
+   Screen.Cursor:= crHourGlass;
+
+   try
+      _NodeAdded:= False;
+
+      //On récupère le chemin du fichier gamelist.xml
+      _GameListPath:= FRootPath + FCurrentFolder + Cst_GameListFileName;
+
+      _Index:= Lbx_Games.ItemIndex;
+
+      //On ouvre le fichier xml
+      XMLDoc.LoadFromFile( _GameListPath );
+
+      Screen.Cursor:= crHourGlass;
+      ProgressBar.Visible:= True;
+      ProgressBar.Position:= 0;
+      ProgressBar.Max:= Lbx_Games.SelCount;
+
+      Genre:= Edt_Genre.Text;
+      Rating:= Edt_Rating.Text;
+      Players:= Edt_NbPlayers.Text;
+      Developer:= Edt_Developer.Text;
+      Date:= Edt_ReleaseDate.Text;
+      Publisher:= Edt_Publisher.Text;
+      Description:= Mmo_Description.Text;
+      Region:= Edt_Region.Text;
+      Hidden:= Cbx_Hidden.ItemIndex;
+      Favorite:= Cbx_Favorite.ItemIndex;
+
+      //on boucle sur les jeux sélectionnés
+      for ii:= 0 to Pred( Lbx_Games.Items.Count ) do begin
+        if ( Lbx_Games.Selected[ii] ) then begin
+
+          //On récupère le jeu correspondant
+          _Game:= ( Lbx_Games.Items.Objects[ii] as TGame );         
+        
+          //On récupère le premier noeud "game"
+          _Node := XMLDoc.DocumentElement.ChildNodes.FindNode( Cst_Game );
+          
+          //Et on boucle pour trouver le bon noeud
+          repeat
+            if ( _Node.ChildNodes.Nodes[Cst_Path].Text = _Game.RomPath ) then Break;
+            _Node := _Node.NextSibling;
+          until not Assigned( _Node );
+
+          //On peut maintenant mettre les infos à jour dans le xml si besoin
+          if (Genre <> '') and not ( _Game.Genre.Equals( Genre ) ) then begin
+            if not ( NodeExists( _Node, Cst_Genre ) ) then begin
+               _Node.AddChild( Cst_Genre );
+               _NodeAdded:= True;
+            end;
+            _Node.ChildNodes.Nodes[Cst_Genre].Text:= Genre;
+            _Game.Genre:= Genre;
+          end;
+
+          if (Rating <> '') and not ( _Game.Rating.Equals( Rating ) ) then begin
+            if not ( NodeExists( _Node, Cst_Rating ) ) then begin
+               _Node.AddChild( Cst_Rating );
+               _NodeAdded:= True;
+            end;
+            _Node.ChildNodes.Nodes[Cst_Rating].Text:= Rating;
+            _Game.Rating:= Rating;
+          end;
+
+          if (Players <> '') and not ( _Game.Players.Equals( Players ) ) then begin
+            if not ( NodeExists( _Node, Cst_Players ) ) then begin
+               _Node.AddChild( Cst_Players );
+               _NodeAdded:= True;
+            end;
+            _Node.ChildNodes.Nodes[Cst_Players].Text:= Players;
+            _Game.Players:= Players;
+          end;
+
+          if (Developer <> '') and not ( _Game.Developer.Equals( Developer ) ) then begin
+            if not ( NodeExists( _Node, Cst_Developer ) ) then begin
+               _Node.AddChild( Cst_Developer );
+               _NodeAdded:= True;
+            end;
+            _Node.ChildNodes.Nodes[Cst_Developer].Text:= Developer;
+            _Game.Developer:= Developer;
+          end;
+
+          if (Date <> '') and not ( _Game.ReleaseDate.Equals( Date ) ) then begin
+            if not ( NodeExists( _Node, Cst_ReleaseDate ) ) then begin
+               _Node.AddChild( Cst_ReleaseDate );
+               _NodeAdded:= True;
+            end;
+            _Date:= FormatDateFromString( Date, True );
+            if not _Date.IsEmpty then
+               _Game.ReleaseDate:= Date
+            else begin
+               _Game.ReleaseDate:= '';
+            end;
+            _Node.ChildNodes.Nodes[Cst_ReleaseDate].Text:= _Date;
+          end;
+                   
+          if (Publisher <> '') and not ( _Game.Publisher.Equals( Publisher ) ) then begin
+            if not ( NodeExists( _Node, Cst_Publisher ) ) then begin
+               _Node.AddChild( Cst_Publisher );
+               _NodeAdded:= True;
+            end;
+            _Node.ChildNodes.Nodes[Cst_Publisher].Text:= Publisher;
+            _Game.Publisher:= Publisher;
+          end;
+
+          if (Description <> '') and not ( _Game.Description.Equals( Description ) ) then begin
+            if not ( NodeExists( _Node, Cst_Description ) ) then begin
+               _Node.AddChild( Cst_Description );
+               _NodeAdded:= True;
+            end;
+            _Node.ChildNodes.Nodes[Cst_Description].Text:= Description;
+            _Game.Description:= Description;
+          end;
+
+          if (Region <> '') and not ( _Game.Region.Equals( Region ) ) then begin
+            if not ( NodeExists( _Node, Cst_Region ) ) then begin
+               _Node.AddChild( Cst_Region );
+               _NodeAdded:= True;
+            end;
+            _Node.ChildNodes.Nodes[Cst_Region].Text:= Region;
+            _Game.Region:= Region;
+          end;
+
+          if (Hidden <> -1) and not ( _Game.Hidden = Hidden ) then begin
+            if not ( NodeExists( _Node, Cst_Hidden ) ) then begin
+               _Node.AddChild( Cst_Hidden );
+               _NodeAdded:= True;
+            end;
+            if ( Cbx_Hidden.ItemIndex = 0 ) then _Node.ChildNodes.Nodes[Cst_Hidden].Text:= Cst_False
+            else _Node.ChildNodes.Nodes[Cst_Hidden].Text:= Cst_True;
+            _Game.Hidden:= Hidden;
+          end;
+
+          if (Favorite <> -1) and not ( _Game.Favorite = Favorite ) then begin
+            if not ( NodeExists( _Node, Cst_Favorite ) ) then begin
+               _Node.AddChild( Cst_Favorite );
+               _NodeAdded:= True;
+            end;
+            if ( Cbx_Favorite.ItemIndex = 0 ) then _Node.ChildNodes.Nodes[Cst_Favorite].Text:= Cst_False
+            else _Node.ChildNodes.Nodes[Cst_Favorite].Text:= Cst_True;
+            _Game.Favorite:= Favorite;
+          end;
+
+          ProgressBar.Position:= ProgressBar.Position + 1;
+        end;
+      end;
+
+      ProgressBar.Visible:= False;
+
+      //Et enfin on enregistre le fichier (en formatant correctement si on a ajouté un noeud)
+      if _NodeAdded then begin
+         XMLDoc.XML.Text:= Xml.Xmldoc.FormatXMLData( XMLDoc.XML.Text );
+         XMLDoc.Active:= True;
+      end;
+      XMLDoc.SaveToFile( _GameListPath );
+      XMLDoc.Active:= False;
+
+      //on rafraichit la liste
+      LoadGamesList( getCurrentFolderName );
+
+      if ( Lbx_Games.Count > 0 ) then Lbx_Games.Selected[0]:= False;
+
+      //et on remet la sélection sur le bon item si possible
+      if ( Lbx_Games.Count = 0 ) then
+         Lbx_Games.ItemIndex:= -1
+      else if ( Lbx_Games.Count > 0 ) then begin
+         if ( _Index >= Lbx_Games.Count ) then begin
+            Lbx_Games.ItemIndex:= Pred( Lbx_Games.Count );
+         end else
+         Lbx_Games.ItemIndex:= _Index;
+      end;
+
+      if ( Lbx_Games.Count > 0 ) then begin
+         Lbx_Games.Selected[Lbx_Games.ItemIndex]:= True;
+         LoadGame( ( Lbx_Games.Items.Objects[Lbx_Games.ItemIndex] as TGame ) );
+      end;
+
+   finally
+      Screen.Cursor:= crDefault;
+   end;
+end;
+
 
 //Enregistre les changements effectués pour le jeu dans le fichier .xml
 //et rafraichit le listbox si besoin

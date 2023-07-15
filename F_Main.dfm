@@ -2391,7 +2391,7 @@ object Frm_Editor: TFrm_Editor
           Top = 640
           Width = 209
           Height = 25
-          Caption = 'Save Changes for this game'
+          Caption = 'Save Changes'
           Enabled = False
           TabOrder = 25
           OnClick = Btn_SaveChangesClick
