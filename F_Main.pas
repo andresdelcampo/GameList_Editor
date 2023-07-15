@@ -972,6 +972,9 @@ begin
    Chk_ManualCRC.Enabled:= Btn_Scrape.Enabled;
 
    Tbs_Scrape.TabVisible:= aValue;
+   Tbs_Video.TabVisible:= aValue;
+   if aValue = false then 
+      StopGameVideo();
 end;
 
 //Action lorsqu'on change le contenu d'un des champs
@@ -1215,6 +1218,9 @@ begin
    Chk_ManualCRC.Enabled:= Btn_Scrape.Enabled;
 
    Tbs_Scrape.TabVisible:= aValue;
+   Tbs_Video.TabVisible:= aValue;
+   if aValue = false then 
+      StopGameVideo();
 end;
 
 procedure TFrm_Editor.StartGameVideo(const aPath: string);

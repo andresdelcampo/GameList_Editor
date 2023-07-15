@@ -1016,7 +1016,6 @@ object Frm_Editor: TFrm_Editor
     0000000000000000000000000000000000000000000000000000000000000000
     000000000000}
   Menu = MainMenu
-  OldCreateOrder = False
   Position = poScreenCenter
   OnClose = FormClose
   OnCloseQuery = FormCloseQuery
@@ -1025,7 +1024,6 @@ object Frm_Editor: TFrm_Editor
   OnMouseWheelDown = FormMouseWheelDown
   OnMouseWheelUp = FormMouseWheelUp
   OnShow = FormShow
-  PixelsPerInch = 96
   TextHeight = 13
   object Pnl_Background: TPanel
     Left = 0
