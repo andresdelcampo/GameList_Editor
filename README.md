@@ -1,9 +1,10 @@
-# GameList Editor 2022 is here!
+# GameList Editor 2023 is here!
 This repository intends to contribute to GameList Editor development and bring it back to life as NeeeeB is not planning to build it anymore and it is no longer scraping or recognizing new systems.
 
 GameList Editor is now in the best shape it ever had! 
 * **Full Video support!** with playback! -also buttons for changing and deleting the video. Also basic **video scraping** and a new Missing Videos filter 
 * **Recognize ANY system.** No longer limited to a few preconfigured folder names.
+* **Batch editing (NEW 2023!)** so that you can set fields like region, genre, favorite, hidden, date, developer or even description to all selected games with one button click.
 * **Scraping is now in top shape!** It now supports TLS 1.3 to be able to talk to the server again. The former implementation was obsolete and no longer working due to new security requirements from the server. It is now up to date.
 * **Scraping is much more resilient** -far less crashes when malformed XML or unexpected structure came from the server.
 * **Languages are back better than ever!** The translations were not included in this fork releases before (by mistake). The resources are added back with the latest new labels in all supported languages.
