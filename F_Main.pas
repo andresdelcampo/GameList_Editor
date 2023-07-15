@@ -369,16 +369,12 @@ begin
 end;
 
 function TFrm_Editor.GetPhysicalRomPath( const aRomPath: string ): string;
-var
-   _Pos: Integer;
 begin
    Result:= FRootPath + FCurrentFolder + aRomPath;
    Result:= StringReplace( Result, '/', '\', [rfReplaceAll] );
 end;
 
 function TFrm_Editor.GetPhysicalMediaPath( const aPath: string ): string;
-var
-   _Pos: Integer;
 begin
    if aPath.IsEmpty then Result:= ''
    else begin
@@ -1027,7 +1023,7 @@ procedure TFrm_Editor.LoadGamesList( const aSystem: string );
    //permet de récupérer le chemin vers les images (du xml)
    procedure GetImageFolder( aGame: TGame );
    var
-      StartPos, EndPos: Integer;
+      EndPos: Integer;
    begin
       EndPos:= LastDelimiter( '/', aGame.ImagePath );
       FImageFolder:= Copy( aGame.ImagePath, 1, EndPos );
@@ -1035,7 +1031,7 @@ procedure TFrm_Editor.LoadGamesList( const aSystem: string );
 
    procedure GetVideoFolder( aGame: TGame );
    var
-      StartPos, EndPos: Integer;
+      EndPos: Integer;
    begin
       EndPos:= LastDelimiter( '/', aGame.VideoPath );
       FVideoFolder:= Copy( aGame.VideoPath, 1, EndPos );
@@ -1780,7 +1776,7 @@ procedure TFrm_Editor.SaveBatchChangesToGamelist();
 var
    _Node: IXMLNode;
    _Game: TGame;
-   _GameListPath, _Date, _NewName, _ImageLink, _VideoLink,
+   _GameListPath, _Date,
    Region, Rating, Developer, Players,
    Description, Publisher, Date, Genre: string;
    _NodeAdded: Boolean;
