@@ -292,7 +292,7 @@ type
       procedure ChangeImage( const aPath: string; aGame: TGame );
       procedure ChangeVideo( const aPath: string; aGame: TGame );
       procedure LoadSystemLogo( const aPictureName: string );
-      procedure DeleteGame( aGame: TGame );
+      procedure DeleteGame( aGame: TGame; reloadGameList: Boolean = True );
       procedure DeleteGamePicture;
       procedure DeleteGameVideo;
       procedure StartGameVideo( const aPath: string );
@@ -1062,7 +1062,7 @@ procedure TFrm_Editor.LoadGamesList( const aSystem: string );
 
    function FlexibleDateParse(const ADateStr: string): TDate;
    var
-      Year, Month, Day: Word;
+      Year, Month: Word;
    begin
       if Length(ADateStr) = 4 then // Only year provided
       begin
@@ -1101,13 +1101,24 @@ begin
       FormatSettings := TFormatSettings.Create;
       FormatSettings.DecimalSeparator := '.';
 
-      // Retrieve the currently selected game, if any, and parse number filters
-      if Lbx_Games.ItemIndex <> -1 then begin
-          _ReferenceGame := Lbx_Games.Items.Objects[Lbx_Games.ItemIndex] as TGame;
+      // Retrieve the currently selected game
+      try
+         if (Lbx_Games.ItemIndex <> -1) and
+            (Lbx_Games.Items.Objects[Lbx_Games.ItemIndex] <> nil) and
+            (Lbx_Games.Items.Objects[Lbx_Games.ItemIndex] is TGame) then begin
+             _ReferenceGame := (Lbx_Games.Items.Objects[Lbx_Games.ItemIndex] as TGame);
+         end else begin
+             _ReferenceGame := nil;
+         end;
+      except on E: Exception do begin
+             _ReferenceGame := nil;
+          end;
+      end;
+      // If any game selected, parse number filters
+      if Assigned(_ReferenceGame) then begin
           _ParsedReferenceRating := StrToFloatDef(AdjustDecimalSeparator(_ReferenceGame.Rating), 0, FormatSettings);
           _ParsedReferenceDate := FlexibleDateParse(_ReferenceGame.ReleaseDate);
       end else begin
-          _ReferenceGame := nil;
           _ParsedReferenceRating := 0;
           _ParsedReferenceDate := Now;
       end;
@@ -1281,7 +1292,7 @@ begin
 
    Lbl_Developer.Enabled:= True;
    Btn_MoreInfos.Enabled:= aValue;
-   Btn_Delete.Enabled:= aValue;
+   Btn_Delete.Enabled:= True;
    Btn_Scrape.Enabled:= aValue;
    Btn_ChangeImage.Enabled:= aValue;
    Btn_ChangeVideo.Enabled:= aValue;
@@ -2424,15 +2435,47 @@ end;
 //Action au click sur le bouton delete this game
 procedure TFrm_Editor.Btn_DeleteClick(Sender: TObject);
 var
-   _Index: Integer;
+   _GamesToDelete: TList<TGame>;
+   _aGame: TGame;
+   _Index, ii: Integer;
 begin
    if FDelWoPrompt or
       ( MyMessageDlg( Rst_DeleteWarning, mtInformation,
                     [mbYes, mbNo], [Rst_Yes, Rst_No], Rst_Info ) = mrYes ) then begin
+
       //on mémorise l'index du listbox pour remettre à la fin
       _Index:= Lbx_Games.ItemIndex;
-      //on supprime le jeu
-      DeleteGame( ( Lbx_Games.Items.Objects[Lbx_Games.ItemIndex] as TGame ) );
+
+      if Lbx_Games.SelCount > 1 then begin
+         Screen.Cursor:= crHourGlass;
+         ProgressBar.Visible:= True;
+         ProgressBar.Position:= 0;
+
+         // Step 1: Capture list of games to delete
+         _GamesToDelete := TList<TGame>.Create;
+         try
+            for ii := Pred(Lbx_Games.Items.Count) downto 0 do begin
+              if Lbx_Games.Selected[ii] then
+                _GamesToDelete.Add(Lbx_Games.Items.Objects[ii] as TGame);
+            end;
+            ProgressBar.Max:= Pred( _GamesToDelete.Count );
+
+            // Step 2: Loop over the list of games to delete and delete them
+            for _aGame in _GamesToDelete do begin
+              DeleteGame(_aGame, False );
+              ProgressBar.Position := ProgressBar.Position + 1;
+            end;
+         finally
+            _GamesToDelete.Free;
+         end;
+         LoadGamesList( getCurrentFolderName );
+         ProgressBar.Visible:= False;
+         Screen.Cursor:= crDefault;
+      end else begin
+         //on supprime le jeu
+         DeleteGame( ( Lbx_Games.Items.Objects[Lbx_Games.ItemIndex] as TGame ) );
+      end;
+
       //et on remet la sélection sur le jeu précédent le supprimé( si possible )
       if ( ( _Index = 0 ) and ( Lbx_Games.Count = 0 ) ) or
          ( ( _Index > 1 ) and ( Lbx_Games.Count > 1 ) ) then
@@ -2469,7 +2512,7 @@ begin
 end;
 
 //Supprime un jeu du gamelist et physiquement sur le disque (ou carte SD ou clé...)
-procedure TFrm_Editor.DeleteGame( aGame: TGame );
+procedure TFrm_Editor.DeleteGame( aGame: TGame; reloadGameList: Boolean = True );
 var
    _Node: IXMLNode;
    _GameListPath: string;
@@ -2536,7 +2579,8 @@ begin
     _List.Remove( aGame );
 
     //et mise à jour de l'affichage du listbox pour prendre en compte la suppression
-    LoadGamesList( getCurrentFolderName );
+    if reloadGameList then
+      LoadGamesList( getCurrentFolderName );
 end;
 
 //au click sur le menu itzm delete duplicates

@@ -107,8 +107,8 @@ resourcestring
                      'the file size, your computer, your HDD...' + sLineBreak +
                      'Do you want to hash anyway ?';
 
-   Rst_DeleteWarning = 'This will delete the entry in the gamelist,' + sLinebreak +
-                       'the rom itself and the associated media permanently.' + sLineBreak +
+   Rst_DeleteWarning = 'This will delete the selected game(s) in the gamelist,' + sLinebreak +
+                       'the rom(s) themselves and the associated media permanently.' + sLineBreak +
                        'Proceed anyway ?';
 
    Rst_StopES = 'Your systems folder seems to be located on your Pi.' + sLineBreak +

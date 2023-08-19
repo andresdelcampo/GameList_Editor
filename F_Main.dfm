@@ -2483,11 +2483,11 @@ object Frm_Editor: TFrm_Editor
           OnClick = Btn_MoreInfosClick
         end
         object Btn_Delete: TButton
-          Left = 1040
+          Left = 1000
           Top = 640
-          Width = 142
+          Width = 182
           Height = 25
-          Caption = 'Delete this game'
+          Caption = 'Delete selected game(s)'
           Enabled = False
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
