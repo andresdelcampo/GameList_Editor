@@ -5,6 +5,8 @@ GameList Editor is now in the best shape it ever had!
 * **Full Video support!** with playback! -also buttons for changing and deleting the video. Also basic **video scraping** and a new Missing Videos filter 
 * **Recognize ANY system.** No longer limited to a few preconfigured folder names.
 * **Batch editing (NEW 2023!)** so that you can set fields like region, genre, favorite, hidden, date, developer or even description to all selected games with one button click.
+* **More filters (NEW 2023!)** like Same Genre, Same or Lower Rating, Same Publisher, etc. so it is easier than ever to explore, edit or delete similar games.
+* **Mass deletion (NEW 2023!)** especially powerful when combined with the new filters. Easier than ever to delete games of a specific Genre, or low rating, etc.
 * **Scraping is now in top shape!** It now supports TLS 1.3 to be able to talk to the server again. The former implementation was obsolete and no longer working due to new security requirements from the server. It is now up to date.
 * **Scraping is much more resilient** -far less crashes when malformed XML or unexpected structure came from the server.
 * **Languages are back better than ever!** The translations were not included in this fork releases before (by mistake). The resources are added back with the latest new labels in all supported languages.
