@@ -1045,12 +1045,49 @@ procedure TFrm_Editor.LoadGamesList( const aSystem: string );
       Result:= aLink.IsEmpty or not ( FileExists( aLink ) );
    end;
 
+   function AdjustDecimalSeparator(const Value: string): string;
+   begin
+      Result := StringReplace(Value, ',', '.', [rfReplaceAll]);
+   end;
+
+   function CountChar(const S: string; const Ch: Char): Integer;
+   var
+      i: Integer;
+   begin
+      Result := 0;
+      for i := 1 to Length(S) do
+         if S[i] = Ch then
+            Inc(Result);
+   end;
+
+   function FlexibleDateParse(const ADateStr: string): TDate;
+   var
+      Year, Month, Day: Word;
+   begin
+      if Length(ADateStr) = 4 then // Only year provided
+      begin
+         Result := EncodeDate(StrToIntDef(ADateStr, 0), 1, 1);
+      end else if (CountChar(ADateStr, '-') = 1) or (CountChar(ADateStr, '/') = 1)  then // Year and month provided
+      begin
+         Year := StrToIntDef(Copy(ADateStr, 1, 4), 0);
+         Month := StrToIntDef(Copy(ADateStr, 6, 2), 0);
+         Result := EncodeDate(Year, Month, 1);
+      end else begin // Assume full date
+         Result := StrToDateDef(ADateStr, Now);
+      end;
+   end;
+
 var
+   _ReferenceGame: TGame;
    _TmpList: TObjectList<TGame>;
    _TmpGame: TGame;
    _FilterIndex: Integer;
    _ImageFolderFound: Boolean;
    _VideoFolderFound: Boolean;
+   _FormatSettings: TFormatSettings;
+   _ParsedReferenceRating, _ParsedGameRating: Double;
+   _ParsedReferenceDate: TDate;
+
 begin
    //on stocke le "numero" de filtre.
    _FilterIndex:= Cbx_Filter.ItemIndex;
@@ -1060,6 +1097,20 @@ begin
 
    //On essaye de récupérer la liste de jeux du système choisi
    if GSystemList.TryGetValue( aSystem, _TmpList ) then begin
+
+      FormatSettings := TFormatSettings.Create;
+      FormatSettings.DecimalSeparator := '.';
+
+      // Retrieve the currently selected game, if any, and parse number filters
+      if Lbx_Games.ItemIndex <> -1 then begin
+          _ReferenceGame := Lbx_Games.Items.Objects[Lbx_Games.ItemIndex] as TGame;
+          _ParsedReferenceRating := StrToFloatDef(AdjustDecimalSeparator(_ReferenceGame.Rating), 0, FormatSettings);
+          _ParsedReferenceDate := FlexibleDateParse(_ReferenceGame.ReleaseDate);
+      end else begin
+          _ReferenceGame := nil;
+          _ParsedReferenceRating := 0;
+          _ParsedReferenceDate := Now;
+      end;
 
       //On charge le logo du systeme choisi
       if ( GetCurrentLogoName = Cst_SystemKindImageNames[skMegaDrive] ) and
@@ -1095,6 +1146,11 @@ begin
             _VideoFolderFound:= True;
          end;
 
+         if ( _FilterIndex = 20 ) or ( _FilterIndex = 21 ) then
+         begin
+            _ParsedGameRating := StrToFloatDef(AdjustDecimalSeparator(_TmpGame.Rating), 0, FormatSettings);
+         end;
+
          //Attention usine à gaz booléenne pour gérer les filtres ^^
          if ( _FilterIndex = 0 ) or
             ( ( _FilterIndex = 1 ) and ( CheckIfFileMissing( _TmpGame.PhysicalImagePath ) ) ) or
@@ -1109,7 +1165,18 @@ begin
             ( ( _FilterIndex = 10 ) and ( _TmpGame.Region.IsEmpty ) ) or
             ( ( _FilterIndex = 11 ) and ( _TmpGame.Hidden = 1 ) ) or
             ( ( _FilterIndex = 12 ) and ( _TmpGame.Favorite = 1 ) ) or
-            ( ( _FilterIndex = 13 ) and ( _TmpGame.IsOrphan ) ) then begin
+            ( ( _FilterIndex = 13 ) and ( _TmpGame.IsOrphan ) ) or
+            ( ( _FilterIndex = 14 ) and Assigned(_ReferenceGame) and (_TmpGame.Region = _ReferenceGame.Region) ) or
+            ( ( _FilterIndex = 15 ) and Assigned(_ReferenceGame) and (_TmpGame.ReleaseDate = _ReferenceGame.ReleaseDate) ) or
+            ( ( _FilterIndex = 16 ) and Assigned(_ReferenceGame) and (not _TmpGame.ReleaseDate.IsEmpty) and (FlexibleDateParse(_TmpGame.ReleaseDate) <= _ParsedReferenceDate) ) or
+            ( ( _FilterIndex = 17 ) and Assigned(_ReferenceGame) and (not _TmpGame.ReleaseDate.IsEmpty) and (FlexibleDateParse(_TmpGame.ReleaseDate) >= _ParsedReferenceDate) ) or
+            ( ( _FilterIndex = 18 ) and Assigned(_ReferenceGame) and (_TmpGame.Players = _ReferenceGame.Players) ) or
+            ( ( _FilterIndex = 19 ) and Assigned(_ReferenceGame) and (_TmpGame.Rating = _ReferenceGame.Rating) ) or
+            ( ( _FilterIndex = 20 ) and Assigned(_ReferenceGame) and (not _TmpGame.Rating.IsEmpty) and (_ParsedGameRating <= _ParsedReferenceRating) ) or
+            ( ( _FilterIndex = 21 ) and Assigned(_ReferenceGame) and (not _TmpGame.Rating.IsEmpty) and (_ParsedGameRating >= _ParsedReferenceRating) ) or
+            ( ( _FilterIndex = 22 ) and Assigned(_ReferenceGame) and (_TmpGame.Publisher = _ReferenceGame.Publisher) ) or
+            ( ( _FilterIndex = 23 ) and Assigned(_ReferenceGame) and (_TmpGame.Developer = _ReferenceGame.Developer) ) or
+            ( ( _FilterIndex = 24 ) and Assigned(_ReferenceGame) and (_TmpGame.Genre = _ReferenceGame.Genre) ) then begin
 
             if ( not Chk_ListByRom.Checked ) and
                ( ( Edt_Search.Text = '' ) or

@@ -2450,7 +2450,18 @@ object Frm_Editor: TFrm_Editor
             'Missing Region'
             'Hidden'
             'Favorite'
-            'Orphan')
+            'Orphan'
+            'Same Region'
+            'Same Date'
+            'Same or Earlier Date'
+            'Same or Later Date'
+            'Same Players'
+            'Same Rating'
+            'Same or Lower Rating'
+            'Same or Higher Rating'
+            'Same Publisher'
+            'Same Developer'
+            'Same Genre')
         end
         object Edt_Region: TEdit
           Left = 998
