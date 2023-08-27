@@ -2211,7 +2211,7 @@ object Frm_Editor: TFrm_Editor
           Enabled = False
         end
         object Lbl_Players: TLabel
-          Left = 670
+          Left = 650
           Top = 411
           Width = 35
           Height = 13
@@ -2219,7 +2219,7 @@ object Frm_Editor: TFrm_Editor
           Enabled = False
         end
         object Lbl_Rating: TLabel
-          Left = 807
+          Left = 767
           Top = 411
           Width = 31
           Height = 13
@@ -2227,7 +2227,7 @@ object Frm_Editor: TFrm_Editor
           Enabled = False
         end
         object Lbl_Hidden: TLabel
-          Left = 943
+          Left = 983
           Top = 411
           Width = 33
           Height = 13
@@ -2235,7 +2235,7 @@ object Frm_Editor: TFrm_Editor
           Enabled = False
         end
         object Lbl_Favorite: TLabel
-          Left = 1076
+          Left = 1096
           Top = 411
           Width = 40
           Height = 13
@@ -2282,6 +2282,14 @@ object Frm_Editor: TFrm_Editor
           Caption = 'Search'
           Enabled = False
         end
+        object Lbl_KidGame: TLabel
+          Left = 873
+          Top = 410
+          Width = 44
+          Height = 13
+          Caption = 'Kid Game'
+          Enabled = False
+        end
         object Cbx_Systems: TComboBox
           Left = 29
           Top = 142
@@ -2318,9 +2326,9 @@ object Frm_Editor: TFrm_Editor
           OnKeyPress = Mmo_DescriptionKeyPress
         end
         object Edt_Rating: TEdit
-          Left = 804
+          Left = 764
           Top = 427
-          Width = 108
+          Width = 88
           Height = 21
           Enabled = False
           NumbersOnly = True
@@ -2330,7 +2338,7 @@ object Frm_Editor: TFrm_Editor
         object Edt_ReleaseDate: TEdit
           Left = 533
           Top = 427
-          Width = 108
+          Width = 88
           Height = 21
           Hint = 
             'Following formats are accepted :'#13#10#13#10'dd/mm/yyyy'#13#10'mm/yyyy'#13#10'yyyy'#13#10#13 +
@@ -2369,9 +2377,9 @@ object Frm_Editor: TFrm_Editor
           OnChange = FieldChange
         end
         object Edt_NbPlayers: TEdit
-          Left = 667
+          Left = 647
           Top = 427
-          Width = 108
+          Width = 88
           Height = 21
           Enabled = False
           TabOrder = 16
@@ -2448,6 +2456,7 @@ object Frm_Editor: TFrm_Editor
             'Missing Description'
             'Missing Genre'
             'Missing Region'
+            'Kid Game'
             'Hidden'
             'Favorite'
             'Orphan'
@@ -2523,9 +2532,9 @@ object Frm_Editor: TFrm_Editor
           OnClick = Btn_RemovePictureClick
         end
         object Cbx_Hidden: TComboBox
-          Left = 940
+          Left = 980
           Top = 427
-          Width = 108
+          Width = 88
           Height = 21
           Style = csDropDownList
           Enabled = False
@@ -2536,9 +2545,9 @@ object Frm_Editor: TFrm_Editor
             'Yes')
         end
         object Cbx_Favorite: TComboBox
-          Left = 1074
+          Left = 1094
           Top = 427
-          Width = 108
+          Width = 88
           Height = 21
           Style = csDropDownList
           Enabled = False
@@ -11244,6 +11253,19 @@ object Frm_Editor: TFrm_Editor
           Enabled = False
           TabOrder = 9
           OnClick = Btn_RemoveVideoClick
+        end
+        object Cbx_KidGame: TComboBox
+          Left = 873
+          Top = 427
+          Width = 88
+          Height = 21
+          Style = csDropDownList
+          Enabled = False
+          TabOrder = 29
+          OnChange = FieldChange
+          Items.Strings = (
+            'No'
+            'Yes')
         end
       end
       object Tbs_Scrape: TTabSheet

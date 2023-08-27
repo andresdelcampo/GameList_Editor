@@ -37,6 +37,7 @@ type
       Lbl_Date: TLabel;
       Lbl_Players: TLabel;
       Lbl_Rating: TLabel;
+      Lbl_KidGame: TLabel;
       Lbl_Hidden: TLabel;
       Lbl_Favorite: TLabel;
       Lbl_Publisher: TLabel;
@@ -64,6 +65,7 @@ type
       Btn_Delete: TButton;
       ProgressBar: TProgressBar;
       Btn_RemovePicture: TButton;
+      Cbx_KidGame: TComboBox;
       Cbx_Hidden: TComboBox;
       Cbx_Favorite: TComboBox;
       Edt_RomPath: TEdit;
@@ -707,6 +709,7 @@ begin
    Lbl_Filter.Enabled:= False;
    Lbl_NbGamesFound.Caption:= '';
    Btn_ChangeAll.Enabled:= False;
+   Cbx_KidGame.ItemIndex:= -1;
    Cbx_Hidden.ItemIndex:= -1;
    Cbx_Favorite.ItemIndex:= -1;
    Edt_Search.Text:= '';
@@ -883,6 +886,7 @@ begin
                                GetNodeValue( _Node, Cst_Region ),
                                GetNodeValue( _Node, Cst_Playcount ),
                                GetNodeValue( _Node, Cst_LastPlayed ),
+                               GetNodeValue( _Node, Cst_KidGame ),
                                GetNodeValue( _Node, Cst_Hidden ),
                                GetNodeValue( _Node, Cst_Favorite ) );
 
@@ -939,6 +943,7 @@ begin
    Lbl_Region.Enabled:= aValue;
    Lbl_Hidden.Enabled:= aValue;
    Lbl_Favorite.Enabled:= aValue;
+   Lbl_KidGame.Enabled:= aValue;
 
    Btn_ChangeImage.Enabled:= aValue;
    Btn_ChangeVideo.Enabled:= aValue;
@@ -963,6 +968,7 @@ begin
    Edt_RomPath.Enabled:= aValue;
    Mmo_Description.Enabled:= aValue;
 
+   Cbx_KidGame.Enabled:= aValue;
    Cbx_Hidden.Enabled:= aValue;
    Cbx_Favorite.Enabled:= aValue;
    Chk_ListByRom.Enabled:= aValue;
@@ -998,6 +1004,7 @@ begin
                                not ( Edt_ReleaseDate.Text = '' ) or
                                not ( Mmo_Description.Text = '' ) or
                                not ( Edt_Region.Text = '' ) or
+                               not ( Cbx_KidGame.ItemIndex = -1 ) or
                                not ( Cbx_Hidden.ItemIndex = -1 ) or
                                not ( Cbx_Favorite.ItemIndex = -1 )
    else begin
@@ -1011,6 +1018,7 @@ begin
                                not ( _Game.ReleaseDate.Equals( Edt_ReleaseDate.Text ) ) or
                                not ( _Game.Description.Equals( Mmo_Description.Text ) ) or
                                not ( _Game.Region.Equals( Edt_Region.Text ) ) or
+                               not ( _Game.KidGame = Cbx_KidGame.ItemIndex ) or
                                not ( _Game.Hidden = Cbx_Hidden.ItemIndex ) or
                                not ( _Game.Favorite = Cbx_Favorite.ItemIndex );
    end;
@@ -1157,7 +1165,7 @@ begin
             _VideoFolderFound:= True;
          end;
 
-         if ( _FilterIndex = 20 ) or ( _FilterIndex = 21 ) then
+         if ( _FilterIndex = 21 ) or ( _FilterIndex = 22 ) then
          begin
             _ParsedGameRating := StrToFloatDef(AdjustDecimalSeparator(_TmpGame.Rating), 0, FormatSettings);
          end;
@@ -1174,20 +1182,21 @@ begin
             ( ( _FilterIndex = 8 ) and ( _TmpGame.Description.IsEmpty ) ) or
             ( ( _FilterIndex = 9 ) and ( _TmpGame.Genre.IsEmpty ) ) or
             ( ( _FilterIndex = 10 ) and ( _TmpGame.Region.IsEmpty ) ) or
-            ( ( _FilterIndex = 11 ) and ( _TmpGame.Hidden = 1 ) ) or
-            ( ( _FilterIndex = 12 ) and ( _TmpGame.Favorite = 1 ) ) or
-            ( ( _FilterIndex = 13 ) and ( _TmpGame.IsOrphan ) ) or
-            ( ( _FilterIndex = 14 ) and Assigned(_ReferenceGame) and (_TmpGame.Region = _ReferenceGame.Region) ) or
-            ( ( _FilterIndex = 15 ) and Assigned(_ReferenceGame) and (_TmpGame.ReleaseDate = _ReferenceGame.ReleaseDate) ) or
-            ( ( _FilterIndex = 16 ) and Assigned(_ReferenceGame) and (not _TmpGame.ReleaseDate.IsEmpty) and (FlexibleDateParse(_TmpGame.ReleaseDate) <= _ParsedReferenceDate) ) or
-            ( ( _FilterIndex = 17 ) and Assigned(_ReferenceGame) and (not _TmpGame.ReleaseDate.IsEmpty) and (FlexibleDateParse(_TmpGame.ReleaseDate) >= _ParsedReferenceDate) ) or
-            ( ( _FilterIndex = 18 ) and Assigned(_ReferenceGame) and (_TmpGame.Players = _ReferenceGame.Players) ) or
-            ( ( _FilterIndex = 19 ) and Assigned(_ReferenceGame) and (_TmpGame.Rating = _ReferenceGame.Rating) ) or
-            ( ( _FilterIndex = 20 ) and Assigned(_ReferenceGame) and (not _TmpGame.Rating.IsEmpty) and (_ParsedGameRating <= _ParsedReferenceRating) ) or
-            ( ( _FilterIndex = 21 ) and Assigned(_ReferenceGame) and (not _TmpGame.Rating.IsEmpty) and (_ParsedGameRating >= _ParsedReferenceRating) ) or
-            ( ( _FilterIndex = 22 ) and Assigned(_ReferenceGame) and (_TmpGame.Publisher = _ReferenceGame.Publisher) ) or
-            ( ( _FilterIndex = 23 ) and Assigned(_ReferenceGame) and (_TmpGame.Developer = _ReferenceGame.Developer) ) or
-            ( ( _FilterIndex = 24 ) and Assigned(_ReferenceGame) and (_TmpGame.Genre = _ReferenceGame.Genre) ) then begin
+            ( ( _FilterIndex = 11 ) and ( _TmpGame.KidGame = 1 ) ) or
+            ( ( _FilterIndex = 12 ) and ( _TmpGame.Hidden = 1 ) ) or
+            ( ( _FilterIndex = 13 ) and ( _TmpGame.Favorite = 1 ) ) or
+            ( ( _FilterIndex = 14 ) and ( _TmpGame.IsOrphan ) ) or
+            ( ( _FilterIndex = 15 ) and Assigned(_ReferenceGame) and (_TmpGame.Region = _ReferenceGame.Region) ) or
+            ( ( _FilterIndex = 16 ) and Assigned(_ReferenceGame) and (_TmpGame.ReleaseDate = _ReferenceGame.ReleaseDate) ) or
+            ( ( _FilterIndex = 17 ) and Assigned(_ReferenceGame) and (not _TmpGame.ReleaseDate.IsEmpty) and (FlexibleDateParse(_TmpGame.ReleaseDate) <= _ParsedReferenceDate) ) or
+            ( ( _FilterIndex = 18 ) and Assigned(_ReferenceGame) and (not _TmpGame.ReleaseDate.IsEmpty) and (FlexibleDateParse(_TmpGame.ReleaseDate) >= _ParsedReferenceDate) ) or
+            ( ( _FilterIndex = 19 ) and Assigned(_ReferenceGame) and (_TmpGame.Players = _ReferenceGame.Players) ) or
+            ( ( _FilterIndex = 20 ) and Assigned(_ReferenceGame) and (_TmpGame.Rating = _ReferenceGame.Rating) ) or
+            ( ( _FilterIndex = 21 ) and Assigned(_ReferenceGame) and (not _TmpGame.Rating.IsEmpty) and (_ParsedGameRating <= _ParsedReferenceRating) ) or
+            ( ( _FilterIndex = 22 ) and Assigned(_ReferenceGame) and (not _TmpGame.Rating.IsEmpty) and (_ParsedGameRating >= _ParsedReferenceRating) ) or
+            ( ( _FilterIndex = 23 ) and Assigned(_ReferenceGame) and (_TmpGame.Publisher = _ReferenceGame.Publisher) ) or
+            ( ( _FilterIndex = 24 ) and Assigned(_ReferenceGame) and (_TmpGame.Developer = _ReferenceGame.Developer) ) or
+            ( ( _FilterIndex = 25 ) and Assigned(_ReferenceGame) and (_TmpGame.Genre = _ReferenceGame.Genre) ) then begin
 
             if ( not Chk_ListByRom.Checked ) and
                ( ( Edt_Search.Text = '' ) or
@@ -1275,6 +1284,7 @@ begin
 
    Mmo_Description.Enabled:= True;
 
+   Cbx_KidGame.Enabled:= True;
    Cbx_Hidden.Enabled:= True;
    Cbx_Favorite.Enabled:= True;
    Chk_ListByRom.Enabled:= aValue;
@@ -1285,6 +1295,7 @@ begin
    Lbl_Region.Enabled:= True;
    Lbl_Players.Enabled:= True;
    Lbl_Rating.Enabled:= True;
+   Lbl_KidGame.Enabled:= True;
    Lbl_Hidden.Enabled:= True;
    Lbl_Favorite.Enabled:= True;
    Lbl_Description.Enabled:= True;
@@ -1377,6 +1388,7 @@ begin
    Edt_Genre.Text:= aGame.Genre;
    Mmo_Description.Text:= aGame.Description;
    Edt_Region.Text:= aGame.Region;
+   Cbx_KidGame.ItemIndex:= aGame.KidGame;
    Cbx_Hidden.ItemIndex:= aGame.Hidden;
    Cbx_Favorite.ItemIndex:= aGame.Favorite;
    Edt_RomPath.Text:= aGame.RomPath;
@@ -1858,7 +1870,7 @@ var
    Region, Rating, Developer, Players,
    Description, Publisher, Date, Genre: string;
    _NodeAdded: Boolean;
-   _Index, ii, Hidden, Favorite: Integer;
+   _Index, ii, KidGame, Hidden, Favorite: Integer;
 begin
    Screen.Cursor:= crHourGlass;
 
@@ -1886,6 +1898,7 @@ begin
       Publisher:= Edt_Publisher.Text;
       Description:= Mmo_Description.Text;
       Region:= Edt_Region.Text;
+      KidGame:= Cbx_KidGame.ItemIndex;
       Hidden:= Cbx_Hidden.ItemIndex;
       Favorite:= Cbx_Favorite.ItemIndex;
 
@@ -1981,6 +1994,16 @@ begin
             end;
             _Node.ChildNodes.Nodes[Cst_Region].Text:= Region;
             _Game.Region:= Region;
+          end;
+
+          if (KidGame <> -1) and not ( _Game.KidGame = KidGame ) then begin
+            if not ( NodeExists( _Node, Cst_KidGame ) ) then begin
+               _Node.AddChild( Cst_KidGame );
+               _NodeAdded:= True;
+            end;
+            if ( Cbx_KidGame.ItemIndex = 0 ) then _Node.ChildNodes.Nodes[Cst_KidGame].Text:= Cst_False
+            else _Node.ChildNodes.Nodes[Cst_KidGame].Text:= Cst_True;
+            _Game.KidGame:= KidGame;
           end;
 
           if (Hidden <> -1) and not ( _Game.Hidden = Hidden ) then begin
@@ -2201,6 +2224,16 @@ begin
          end;
 
          if not aScrape then begin
+            if not ( _Game.KidGame = Cbx_KidGame.ItemIndex ) then begin
+               if not ( NodeExists( _Node, Cst_KidGame ) ) then begin
+                  _Node.AddChild( Cst_KidGame );
+                  _NodeAdded:= True;
+               end;
+               if ( Cbx_KidGame.ItemIndex = 0 ) then _Node.ChildNodes.Nodes[Cst_KidGame].Text:= Cst_False
+               else _Node.ChildNodes.Nodes[Cst_KidGame].Text:= Cst_True;
+               _Game.KidGame:= Cbx_KidGame.ItemIndex;
+            end;
+
             if not ( _Game.Hidden = Cbx_Hidden.ItemIndex ) then begin
                if not ( NodeExists( _Node, Cst_Hidden ) ) then begin
                   _Node.AddChild( Cst_Hidden );
@@ -2671,6 +2704,7 @@ begin
    Edt_RomPath.Text:= '';
    Mmo_Description.Text:= '';
    Img_Game.Picture.Graphic:= nil;
+   Cbx_KidGame.ItemIndex:= -1;
    Cbx_Hidden.ItemIndex:= -1;
    Cbx_Favorite.ItemIndex:= -1;
 
@@ -3116,18 +3150,20 @@ end;
 //Choix de la langue
 procedure TFrm_Editor.Mnu_LangClick(Sender: TObject);
 var
-   index, index2, index3: Integer;
+   index, index2, index3, index4: Integer;
    _TmpList: TObjectList<TGame>;
 begin
    index:= Cbx_Filter.ItemIndex;
    index2:= Cbx_Hidden.ItemIndex;
    index3:= Cbx_Favorite.ItemIndex;
+   index4:= Cbx_KidGame.ItemIndex;
    UseLanguage( Cst_LangNameStr[GetLangEnum( ( Sender as TMenuItem).Tag )] );
    FLanguage:= ( Sender as TMenuItem ).Tag;
    RetranslateComponent( Self );
    Cbx_Filter.ItemIndex:= index;
    Cbx_Hidden.ItemIndex:= index2;
    Cbx_Favorite.ItemIndex:= index3;
+   Cbx_KidGame.ItemIndex:= index4;
 
    //On indique le nombre de jeux trouvés
    //Je suis obligé de refaire ça ici sinon le label reste sur l'ancienne langue

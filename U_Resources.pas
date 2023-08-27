@@ -379,6 +379,7 @@ const
    Cst_Region = 'region';
    Cst_Playcount = 'playcount';
    Cst_LastPlayed = 'lastplayed';
+   Cst_KidGame = 'kidgame';
    Cst_Hidden = 'hidden';
    Cst_Favorite = 'favorite';
    Cst_GameListFileName = 'gamelist.xml';

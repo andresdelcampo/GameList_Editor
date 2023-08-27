@@ -38,6 +38,7 @@ type
       FCrc32: string;
       FMd5: string;
       FSha1: string;
+      FKidGame: Integer;
       FHidden: Integer;
       FFavorite: Integer;
       FIsOrphan: Boolean;
@@ -47,14 +48,14 @@ type
 
       procedure Load( aPath, aName, aDescription, aImagePath, aVideoPath,
                       aRating, aDeveloper, aPublisher, aGenre, aPlayers, aDate,
-                      aRegion, aPlaycount, aLastplayed, aHidden, aFavorite: string );
+                      aRegion, aPlaycount, aLastplayed, aKidGame, aHidden, aFavorite: string );
 
       function GetRomName( const aRomPath: string ): string;
 
    public
       constructor Create( aPath, aName, aDescription, aImagePath, aVideoPath,
                           aRating, aDeveloper, aPublisher, aGenre, aPlayers, aDate,
-                          aRegion, aPlaycount, aLastplayed, aHidden, aFavorite: string ); reintroduce;
+                          aRegion, aPlaycount, aLastplayed, aKidGame, aHidden, aFavorite: string ); reintroduce;
 
       property RomPath: string read FRomPath write FRomPath;
       property RomName: string read FRomName write FRomName;
@@ -75,6 +76,7 @@ type
       property Crc32: string read FCrc32 write FCrc32;
       property Md5: string read FMd5 write FMd5;
       property Sha1: string read FSha1 write FSha1;
+      property KidGame: Integer read FKidGame write FKidGame;
       property Hidden: Integer read FHidden write FHidden;
       property Favorite: Integer read FFavorite write FFavorite;
       property IsOrphan: Boolean read FIsOrphan write FIsOrphan;
@@ -107,17 +109,17 @@ end;
 //Constructeur de l'objet TGame
 constructor TGame.Create( aPath, aName, aDescription, aImagePath, aVideoPath,
                           aRating, aDeveloper, aPublisher, aGenre, aPlayers, aDate,
-                          aRegion, aPlaycount, aLastplayed, aHidden, aFavorite: string );
+                          aRegion, aPlaycount, aLastplayed, aKidGame, aHidden, aFavorite: string );
 begin
    Load( aPath, aName, aDescription, aImagePath, aVideoPath, aRating,
          aDeveloper, aPublisher, aGenre, aPlayers, aDate, aRegion, aPlaycount,
-         aLastplayed, aHidden, aFavorite );
+         aLastplayed, aKidGame, aHidden, aFavorite );
 end;
 
 //Chargement des attributs dans l'objet TGame
 procedure TGame.Load( aPath, aName, aDescription, aImagePath, aVideoPath, aRating,
                       aDeveloper, aPublisher, aGenre, aPlayers, aDate,
-                      aRegion, aPlaycount, aLastplayed, aHidden, aFavorite: string );
+                      aRegion, aPlaycount, aLastplayed, aKidGame, aHidden, aFavorite: string );
 begin
    FRomPath:= aPath;
    FRomName:= GetRomName( aPath );
@@ -135,6 +137,8 @@ begin
    FRegion:= aRegion;
    FPlaycount:= aPlaycount;
    FLastplayed:= aLastplayed;
+   if ( aKidGame = Cst_True ) then FKidGame:= 1
+   else FKidGame:= 0;
    if ( aHidden = Cst_True ) then FHidden:= 1
    else FHidden:= 0;
    if ( aFavorite = Cst_True ) then FFavorite:= 1
