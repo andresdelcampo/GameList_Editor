@@ -36,7 +36,7 @@ begin
    //on remplit les champs
    Edt_Playcount.Text:= aGame.PlayCount;
    if not aGame.Lastplayed.IsEmpty then
-      Edt_LastPlayed.Text:= FormatDateTime('dd/mm/yyyy hh:mm:ss' , ISO8601ToDate( aGame.ReleaseDate ) )
+      Edt_LastPlayed.Text:= FormatDateTime('dd/mm/yyyy hh:mm:ss' , ISO8601ToDate( aGame.Lastplayed ) )
    else Edt_LastPlayed.Text:= '';
    Edt_Crc32.Text:= aGame.Crc32;
    Edt_Md5.Text:= aGame.Md5;
