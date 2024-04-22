@@ -16,6 +16,8 @@ GameList Editor is now in the best shape it ever had!
 
 **NOTE**: On high resolution screens you may want to right click on Properties in GameListEditor.exe, click on Compatibility, Change high DPI settings button, mark Override high DPI scaling behavior... to System (dropdown). Ok and Ok. 
 
+**Requirement Warning** It requires Windows Media Player installed. If you see an error message EOleSysError / Class not registered when launching, please check https://github.com/andresdelcampo/GameList_Editor/issues/18 
+
 ### Quickstart for New users:
 - Select your language in Options / Language.
 - If you want to scrape games, enter your Screenscraper.fr user and password in Options / Network / Configure.
