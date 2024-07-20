@@ -11217,21 +11217,6 @@ object Frm_Editor: TFrm_Editor
               Proportional = True
               Transparent = True
             end
-            object Wmp_Video: TWindowsMediaPlayer
-              Left = 0
-              Top = 0
-              Width = 612
-              Height = 612
-              TabOrder = 0
-              Visible = False
-              ControlData = {
-                0003000008000200000000000500000000000000F03F03000000000005000000
-                00000000000008000200000000000300010000000B0000000300000000000B00
-                FFFF08000200000000000300320000000B00000008000A0000006E006F006E00
-                650000000B0000000B0000000B00FFFF0B00FFFF0B0000000800020000000000
-                0800020000000000080002000000000008000200000000000B00000025240000
-                25240000}
-            end
           end
         end
         object Btn_ChangeVideo: TButton

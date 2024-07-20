@@ -184,7 +184,6 @@ type
       Pgc_Media: TPageControl;
       Tbs_Picture: TTabSheet;
       Tbs_Video: TTabSheet;
-      Wmp_Video: TWindowsMediaPlayer;
       Img_Game: TImage;
       Img_BackGround: TImage;
       Btn_ChangeVideo: TButton;
@@ -270,7 +269,9 @@ type
       FRecalLogin, FRecalPwd, FRetroLogin, FRetroPwd: string;
       FSSLogin, FSSPwd: string;
       FScrapedGame: TGame;
+      FIsWine: Boolean;
       GSystemList: TObjectDictionary<string,TObjectList<TGame>>;
+      Wmp_Video: TWindowsMediaPlayer;
 
       FPrevWinControl: TWinControl;
 
@@ -311,7 +312,9 @@ type
                                      aNbStart, aNbEnd, aCaseIndex: Integer;
                                      const aStringStart, aStringEnd : string );
       procedure ExportToTxt;
+      procedure CreateWindowsMediaPlayer;
 
+      function IsRunningUnderWine: Boolean;
       function getSystemKind: TSystemKind;
       function getCurrentFolderName: string;
       function GetCurrentLogoName: string;
@@ -362,6 +365,14 @@ var
 implementation
 
 {$R *.dfm}
+
+function TFrm_Editor.IsRunningUnderWine: Boolean;
+var
+   Handle: THandle;
+begin
+   Handle := GetModuleHandle('ntdll.dll');
+   Result := (Handle <> 0) and (GetProcAddress(Handle, 'wine_get_version') <> nil);
+end;
 
 function TFrm_Editor.SetFocusedControl(Control: TWinControl): Boolean;
 begin
@@ -583,6 +594,8 @@ end;
 //A l'ouverture du programme
 procedure TFrm_Editor.FormCreate(Sender: TObject);
 begin
+   FIsWine := IsRunningUnderWine;
+   CreateWindowsMediaPlayer;
    TranslateComponent( Self );
    FImgList:= TObjectList<TImage>.Create;
    FInfosList:= TStringList.Create( True );
@@ -594,6 +607,36 @@ begin
    FPiLoadedOnce:= False;
    FTempXmlPath:= ExtractFilePath( Application.ExeName ) + Cst_TempXml;
    CounterGuard:= TCriticalSection.Create;
+end;
+
+procedure TFrm_Editor.CreateWindowsMediaPlayer;
+begin
+   if not FIsWine then
+   begin
+      try
+         Wmp_Video := TWindowsMediaPlayer.Create(Self);
+         with Wmp_Video do
+         begin
+            Top := 0;
+            Left := 0;
+            Height := 812;
+            Width := 612;
+            TabOrder := 0;
+            uiMode := 'none';
+            enableContextMenu := False;
+            autoSize := False;
+            stretchToFit := True;
+            align := alClient;
+            Visible := false;
+            Parent := Tbs_Video;
+
+            SetBounds(Left, Top, Width, Height);
+         end;
+      except
+         on E: Exception do
+         ShowMessage('Error creating Windows Media Player: ' + E.Message);
+      end;
+   end;
 end;
 
 //Met le focus sur le combo system à l'affichage de la fenêtre
@@ -975,7 +1018,12 @@ begin
    Chk_ManualCRC.Enabled:= Btn_Scrape.Enabled;
 
    Tbs_Scrape.TabVisible:= aValue;
-   Tbs_Video.TabVisible:= aValue;
+
+   if FIsWine then
+      Tbs_Video.TabVisible:= False
+   else
+      Tbs_Video.TabVisible:= aValue;
+
    if aValue = false then 
       StopGameVideo();
 end;
@@ -1319,25 +1367,36 @@ begin
    Chk_ManualCRC.Enabled:= Btn_Scrape.Enabled;
 
    Tbs_Scrape.TabVisible:= aValue;
-   Tbs_Video.TabVisible:= aValue;
-   if aValue = false then 
+
+   if FIsWine then
+      Tbs_Video.TabVisible:= False
+   else
+      Tbs_Video.TabVisible:= aValue;
+
+   if aValue = false then
       StopGameVideo();
 end;
 
 procedure TFrm_Editor.StartGameVideo(const aPath: string);
 begin
-   Img_BackgroundVideo.Visible := false;
-   Wmp_Video.Visible := true;
-   Wmp_Video.URL := 'file://' + aPath;
-   Wmp_Video.controls.play;
+   if not FIsWine then
+   begin
+      Img_BackgroundVideo.Visible := false;
+      Wmp_Video.Visible := true;
+      Wmp_Video.URL := 'file://' + aPath;
+      Wmp_Video.controls.play;
+   end;
 end;
 
 procedure TFrm_Editor.StopGameVideo;
 begin
-   Img_BackgroundVideo.Visible := true;
-   Wmp_Video.Visible := false;
-   Wmp_Video.controls.stop;
-   Wmp_Video.URL := '';
+   if not FIsWine then
+   begin
+      Img_BackgroundVideo.Visible := true;
+      Wmp_Video.Visible := false;
+      Wmp_Video.controls.stop;
+      Wmp_Video.URL := '';
+   end;
 end;
 
 procedure TFrm_Editor.UpdateVideo(aGame: TGame);
@@ -3963,7 +4022,10 @@ end;
 // Stop video to prevent crashing the app on closing
 procedure TFrm_Editor.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
 begin
-   Wmp_Video.controls.stop;
+   if not FIsWine then
+   begin
+      Wmp_Video.controls.stop;
+   end;
 end;
 
 //Nettoyage mémoire à la fermeture du programme
@@ -3977,6 +4039,8 @@ begin
    FImgList.Free;
    FInfosList.Free;
    FPictureLinks.Free;
+   if not FIsWine then
+      Wmp_Video.Free;
 
    //libère l'objet lock du compteur de threads
    CounterGuard.Free;
