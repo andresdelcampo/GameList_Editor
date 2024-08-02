@@ -2470,7 +2470,8 @@ object Frm_Editor: TFrm_Editor
             'Same or Higher Rating'
             'Same Publisher'
             'Same Developer'
-            'Same Genre')
+            'Same Genre'
+            'Same Folder')
         end
         object Edt_Region: TEdit
           Left = 998

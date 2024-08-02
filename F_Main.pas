@@ -1133,6 +1133,15 @@ procedure TFrm_Editor.LoadGamesList( const aSystem: string );
       end;
    end;
 
+   function SameFolder(Path1, Path2: string): Boolean;
+   begin
+      try
+         Result := AnsiSameText(ExtractFilePath(Path1), ExtractFilePath(Path2));
+      except
+         Result := False;
+      end;
+   end;
+
 var
    _ReferenceGame: TGame;
    _TmpList: TObjectList<TGame>;
@@ -1244,7 +1253,8 @@ begin
             ( ( _FilterIndex = 22 ) and Assigned(_ReferenceGame) and (not _TmpGame.Rating.IsEmpty) and (_ParsedGameRating >= _ParsedReferenceRating) ) or
             ( ( _FilterIndex = 23 ) and Assigned(_ReferenceGame) and (_TmpGame.Publisher = _ReferenceGame.Publisher) ) or
             ( ( _FilterIndex = 24 ) and Assigned(_ReferenceGame) and (_TmpGame.Developer = _ReferenceGame.Developer) ) or
-            ( ( _FilterIndex = 25 ) and Assigned(_ReferenceGame) and (_TmpGame.Genre = _ReferenceGame.Genre) ) then begin
+            ( ( _FilterIndex = 25 ) and Assigned(_ReferenceGame) and (_TmpGame.Genre = _ReferenceGame.Genre) ) or
+            ( ( _FilterIndex = 26 ) and Assigned(_ReferenceGame) and (SameFolder(_TmpGame.PhysicalRomPath, _ReferenceGame.PhysicalRomPath)) ) then begin
 
             if ( not Chk_ListByRom.Checked ) and
                ( ( Edt_Search.Text = '' ) or
