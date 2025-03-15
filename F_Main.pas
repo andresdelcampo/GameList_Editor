@@ -1254,7 +1254,9 @@ begin
             ( ( _FilterIndex = 23 ) and Assigned(_ReferenceGame) and (_TmpGame.Publisher = _ReferenceGame.Publisher) ) or
             ( ( _FilterIndex = 24 ) and Assigned(_ReferenceGame) and (_TmpGame.Developer = _ReferenceGame.Developer) ) or
             ( ( _FilterIndex = 25 ) and Assigned(_ReferenceGame) and (_TmpGame.Genre = _ReferenceGame.Genre) ) or
-            ( ( _FilterIndex = 26 ) and Assigned(_ReferenceGame) and (SameFolder(_TmpGame.PhysicalRomPath, _ReferenceGame.PhysicalRomPath)) ) then begin
+            ( ( _FilterIndex = 26 ) and Assigned(_ReferenceGame) and (SameFolder(_TmpGame.PhysicalRomPath, _ReferenceGame.PhysicalRomPath)) ) or
+            ( ( _FilterIndex = 27 ) and Assigned(_ReferenceGame) and (_TmpGame.Name	= _ReferenceGame.Name) ) or
+            ( ( _FilterIndex = 28 ) and Assigned(_ReferenceGame) and (ExtractFileName(_TmpGame.PhysicalRomPath) = ExtractFileName(_ReferenceGame.PhysicalRomPath)) ) then begin
 
             if ( not Chk_ListByRom.Checked ) and
                ( ( Edt_Search.Text = '' ) or
@@ -2696,6 +2698,7 @@ procedure TFrm_Editor.DeleteDuplicates( const aSystem: string );
 var
    _NodeList: IXMLNodeList;
    _Node1, _Node2: IXMLNode;
+   Node1Path, Node2Path: IXMLNode;
    ii, jj, Count: Integer;
    _List: TObjectList<TGame>;
    _GameListPath: string;
@@ -2727,12 +2730,15 @@ begin
    //si c'est le cas on supprime
    for ii:= Pred( Count ) downto 0 do begin
       _Node1:= _NodeList.Nodes[ii];
-      for jj:= 0 to Pred( ii ) do begin
-         _Node2:= _NodeList.Nodes[jj];
-         if ( _Node1.ChildNodes.FindNode( Cst_Path ).Text =
-              _Node2.ChildNodes.FindNode( Cst_Path ).Text ) then begin
-            _NodeList.Remove( _Node1 );
-            Break;
+      Node1Path := _Node1.ChildNodes.FindNode(Cst_Path);
+      if Node1Path <> nil then begin
+         for jj:= 0 to Pred( ii ) do begin
+            _Node2:= _NodeList.Nodes[jj];
+            Node2Path := _Node2.ChildNodes.FindNode(Cst_Path);
+            if (Node2Path <> nil) and (Node1Path.Text = Node2Path.Text) then begin
+               _NodeList.Remove( _Node1 );
+               Break;
+            end;
          end;
       end;
       ProgressBar.Position:= ( ProgressBar.Position + 1 );
