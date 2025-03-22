@@ -2473,7 +2473,9 @@ object Frm_Editor: TFrm_Editor
             'Same Genre'
             'Same Folder'
             'Same Name'
-            'Same ROM')
+            'Same ROM'
+            'Duplicate Names'
+            'Duplicate ROMs')
         end
         object Edt_Region: TEdit
           Left = 998

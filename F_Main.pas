@@ -1070,7 +1070,7 @@ begin
                                not ( _Game.Hidden = Cbx_Hidden.ItemIndex ) or
                                not ( _Game.Favorite = Cbx_Favorite.ItemIndex );
    end;
-                                   
+
 end;
 
 //Chargement de la liste des jeux d'un système dans le listbox des jeux
@@ -1142,6 +1142,55 @@ procedure TFrm_Editor.LoadGamesList( const aSystem: string );
       end;
    end;
 
+   // Implement the procedure in the implementation section
+   procedure InitializeDuplicateDictionaries(const GameList: TObjectList<TGame>; const FilterIndex: Integer;
+     out NameCountMap: TDictionary<string, Integer>;
+     out ROMPathCountMap: TDictionary<string, Integer>);
+   var
+     Game: TGame;
+     ROMFileName: string;
+   begin
+     NameCountMap := nil;
+     ROMPathCountMap := nil;
+
+     // Create dictionaries only for relevant filters
+     if (FilterIndex = 29) then
+       NameCountMap := TDictionary<string, Integer>.Create;
+     if (FilterIndex = 30) then
+       ROMPathCountMap := TDictionary<string, Integer>.Create;
+
+     try
+       for Game in GameList do begin
+         // Count game names for filter 29 (All with duplicate name)
+         if (FilterIndex = 29) and Assigned(NameCountMap) then begin
+           if NameCountMap.ContainsKey(Game.Name) then
+             NameCountMap[Game.Name] := NameCountMap[Game.Name] + 1
+           else
+             NameCountMap.Add(Game.Name, 1);
+         end;
+
+         // Count ROM paths for filter 30 (All with duplicate roms)
+         if (FilterIndex = 30) and Assigned(ROMPathCountMap) then begin
+           ROMFileName := ExtractFileName(Game.PhysicalRomPath);
+           if ROMPathCountMap.ContainsKey(ROMFileName) then
+             ROMPathCountMap[ROMFileName] := ROMPathCountMap[ROMFileName] + 1
+           else
+             ROMPathCountMap.Add(ROMFileName, 1);
+         end;
+       end;
+     except on E: Exception do
+       begin
+         // Make sure dictionaries are still initialized with empty values
+         if (FilterIndex = 29) and not Assigned(NameCountMap) then
+           NameCountMap := TDictionary<string, Integer>.Create;
+         if (FilterIndex = 30) and not Assigned(ROMPathCountMap) then
+           ROMPathCountMap := TDictionary<string, Integer>.Create;
+         // Handle catastrophic failure in the counting process
+         ShowMessage('Error while searching for duplicates: ' + E.Message);
+       end;
+     end;
+   end;
+
 var
    _ReferenceGame: TGame;
    _TmpList: TObjectList<TGame>;
@@ -1152,7 +1201,9 @@ var
    _FormatSettings: TFormatSettings;
    _ParsedReferenceRating, _ParsedGameRating: Double;
    _ParsedReferenceDate: TDate;
-
+   _NameCountMap: TDictionary<string, Integer>;
+   _ROMPathCountMap: TDictionary<string, Integer>;
+   i: Integer;
 begin
    //on stocke le "numero" de filtre.
    _FilterIndex:= Cbx_Filter.ItemIndex;
@@ -1205,6 +1256,11 @@ begin
       //On commence par vider le listbox
       Lbx_Games.Items.Clear;
 
+      // Initialize dictionaries for duplicate detection (filters 29 and 30)
+      if (_FilterIndex = 29) or (_FilterIndex = 30) then begin
+        InitializeDuplicateDictionaries(_TmpList, _FilterIndex, _NameCountMap, _ROMPathCountMap);
+      end;
+
       //On boucle sur la liste de jeux pour ajouter les noms
       //dans le listbox de la liste des jeux
       for _TmpGame in _TmpList do begin
@@ -1256,7 +1312,10 @@ begin
             ( ( _FilterIndex = 25 ) and Assigned(_ReferenceGame) and (_TmpGame.Genre = _ReferenceGame.Genre) ) or
             ( ( _FilterIndex = 26 ) and Assigned(_ReferenceGame) and (SameFolder(_TmpGame.PhysicalRomPath, _ReferenceGame.PhysicalRomPath)) ) or
             ( ( _FilterIndex = 27 ) and Assigned(_ReferenceGame) and (_TmpGame.Name	= _ReferenceGame.Name) ) or
-            ( ( _FilterIndex = 28 ) and Assigned(_ReferenceGame) and (ExtractFileName(_TmpGame.PhysicalRomPath) = ExtractFileName(_ReferenceGame.PhysicalRomPath)) ) then begin
+            ( ( _FilterIndex = 28 ) and Assigned(_ReferenceGame) and (ExtractFileName(_TmpGame.PhysicalRomPath) = ExtractFileName(_ReferenceGame.PhysicalRomPath)) ) or
+            ( ( _FilterIndex = 29 ) and _NameCountMap.ContainsKey(_TmpGame.Name) and (_NameCountMap[_TmpGame.Name] > 1) ) or
+            ( ( _FilterIndex = 30 ) and _ROMPathCountMap.ContainsKey(ExtractFileName(_TmpGame.PhysicalRomPath)) and
+                                  (_ROMPathCountMap[ExtractFileName(_TmpGame.PhysicalRomPath)] > 1) ) then begin
 
             if ( not Chk_ListByRom.Checked ) and
                ( ( Edt_Search.Text = '' ) or
@@ -1273,6 +1332,14 @@ begin
                   Lbx_Games.Items.AddObject( _TmpGame.RomName, _TmpGame )
             end;
          end
+      end;
+
+      // Free the dictionaries if they were created
+      if (_FilterIndex = 29) or (_FilterIndex = 30) then begin
+         if Assigned(_NameCountMap) then
+            _NameCountMap.Free;
+         if Assigned(_ROMPathCountMap) then
+            _ROMPathCountMap.Free;
       end;
 
       //On indique le nombre de jeux trouvés
