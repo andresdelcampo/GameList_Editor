@@ -12,7 +12,6 @@ GameList Editor is now in the best shape it ever had!
 * **Scraping is much more resilient** -far less crashes when malformed XML or unexpected structure came from the server.
 * **Languages are back better than ever!** The translations were not included in this fork releases before (by mistake). The resources are added back with the latest new labels in all supported languages.
 * Adds **logos and scraping** info for **20 more systems**: '3do', 'amiga' (generic), 'amigacd32', 'arcade', 'atari5200', 'atarilynx', 'cdtv', 'coleco', 'daphne', 'gx4000', 'intellivision', 'naomi', 'neogeocd', 'openbor', 'ports', 'saturn', 'snescd', 'x68000', 'atomiswave', 'ti99', 'snesmsu1', 'gameandwatch', 'nds', 'odyssey2', 'tg16', 'tg16cd', 'pspminis'. 
-* **Active support.** Feel free to open Issues or participate in Discussions to share feedback about the tool and make it better. Those sections are now available in this fork.
 
 **NOTE**: On high resolution screens you may want to right click on Properties in GameListEditor.exe, click on Compatibility, Change high DPI settings button, mark Override high DPI scaling behavior... to System (dropdown). Ok and Ok. 
 
@@ -34,7 +33,8 @@ There are some very significant changes to the inner workings of GameList Editor
 * Dependency on Windows Media Player ActiveX (included in Windows 7 and later -including Windows 11). Implemented in your development environment following: https://chapmanworld.com/windows-media-player-in-delphi/
 * DxGetText used for translations is also deprecated and not working in Windows 10/11, but J. Rathlev has made his own Windows 10/11 version -you can download it from https://personal-backup.rathlev-home.de/translate.html . Translations can be made using the same process as described in http://dxgettext.po.dk/documentation/how-to
 
-### Other ports you may be interested in
+### Other forks and ports you may be interested in
+* https://github.com/HemulGM/GameListEditor - GameList Editor 2026, a UI-refresh with game boxes and a modern look & feel, light and dark theme, etc. Check also [Retroscaper](https://github.com/HemulGM/RetroScraper) - it downloads game descriptions, covers, screenshots, videos, and other media from ScreenScraper and saves them alongside game lists for supported gaming frontends.
 * https://github.com/MikeBergmann/GameList_Editor_Qt - A C++ / Qt 6 port of GameList Editor with a Linux deb package and an Android APK. The ports add features like ES_DE support and a sync-to-other-folder feature, but miss SSH/Pi remote control, multilingual UI, and theming (default Qt widget style only).
 
 
