@@ -34,6 +34,9 @@ There are some very significant changes to the inner workings of GameList Editor
 * Dependency on Windows Media Player ActiveX (included in Windows 7 and later -including Windows 11). Implemented in your development environment following: https://chapmanworld.com/windows-media-player-in-delphi/
 * DxGetText used for translations is also deprecated and not working in Windows 10/11, but J. Rathlev has made his own Windows 10/11 version -you can download it from https://personal-backup.rathlev-home.de/translate.html . Translations can be made using the same process as described in http://dxgettext.po.dk/documentation/how-to
 
+### Other ports you may be interested in
+* https://github.com/MikeBergmann/GameList_Editor_Qt - A C++ / Qt 6 port of GameList Editor with a Linux deb package and an Android APK. The ports add features like ES_DE support and a sync-to-other-folder feature, but miss SSH/Pi remote control, multilingual UI, and theming (default Qt widget style only).
+
 
 # Original readme
 ![alt text](https://github.com/NeeeeB/GameList_Editor/blob/master/Images/logo.png)
